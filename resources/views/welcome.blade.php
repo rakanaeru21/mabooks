@@ -98,7 +98,6 @@
                 <li><a href="#kategori" class="hover:text-orange-500 transition-colors">Kategori</a></li>
                 <li><a href="#keunggulan" class="hover:text-orange-500 transition-colors">Keunggulan</a></li>
                 <li><a href="#tentang" class="hover:text-orange-500 transition-colors">Tentang</a></li>
-                <li><a href="#" class="text-gray-900 hover:text-orange-500 transition-colors"><i class="fas fa-shopping-cart mr-1"></i>Keranjang</a></li>
                 @auth
                 <li class="flex items-center gap-3">
                     <span class="text-gray-700 font-semibold"><i class="fas fa-user-circle mr-1"></i>{{ Auth::user()->nama }}</span>
@@ -126,7 +125,6 @@
             <a href="#kategori" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Kategori</a>
             <a href="#keunggulan" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Keunggulan</a>
             <a href="#tentang" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
-            <a href="#" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors"><i class="fas fa-shopping-cart mr-1"></i>Keranjang</a>
             @auth
             <div class="border-t border-gray-100 pt-3 mt-2">
                 <p class="text-sm font-semibold text-gray-700 py-2"><i class="fas fa-user-circle mr-1"></i>{{ Auth::user()->nama }}</p>

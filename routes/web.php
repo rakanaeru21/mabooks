@@ -25,6 +25,22 @@ Route::get('/', function (Request $request) {
     return view('welcome', compact('books'));
 });
 
+Route::get('/toko', function (Request $request) {
+    $query = Book::query();
+
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('judul', 'like', "%{$search}%")
+              ->orWhere('penulis', 'like', "%{$search}%")
+              ->orWhere('penerbit', 'like', "%{$search}%");
+        });
+    }
+
+    $books = $query->latest()->paginate(12);
+    return view('toko', compact('books'));
+})->name('toko');
+
 // User auth routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
