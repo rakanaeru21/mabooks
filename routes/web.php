@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Models\Book;
 use Illuminate\Http\Request;
@@ -67,4 +68,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('/books', BookController::class)->names('admin.books');
     Route::resource('/categories', CategoryController::class)->names('admin.categories');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 });

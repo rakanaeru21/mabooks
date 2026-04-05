@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tambah Kategori - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Detail Pengguna - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -48,7 +48,7 @@
                 <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
@@ -57,7 +57,7 @@
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
             </nav>
@@ -83,11 +83,12 @@
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
+            <!-- Top bar -->
             <header class="bg-white border-b border-gray-200 px-6 lg:px-8 py-4 flex items-center justify-between">
                 <button id="mobile-sidebar-btn" class="lg:hidden text-gray-600 text-xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900">Tambah Kategori</h1>
+                <h1 class="text-lg font-bold text-gray-900">Detail Pengguna</h1>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden sm:block">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
                     <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -96,45 +97,100 @@
                 </div>
             </header>
 
+            <!-- Content -->
             <main class="flex-1 p-6 lg:p-8">
-                <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6 transition-colors">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Kategori
+                <!-- Back button -->
+                <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition-colors mb-6">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Pengguna
                 </a>
 
-                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden max-w-xl">
-                    <div class="px-6 py-5 border-b border-gray-100">
-                        <h2 class="font-bold text-gray-900">Informasi Kategori</h2>
-                        <p class="text-sm text-gray-500 mt-1">Isi detail kategori baru</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Profile Card -->
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:col-span-1">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-20 h-20 {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-orange-100 text-orange-600' }} rounded-full flex items-center justify-center font-bold text-3xl mb-4">
+                                {{ strtoupper(substr($user->nama, 0, 1)) }}
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-900">{{ $user->nama }}</h2>
+                            <div class="mt-2">
+                                @if ($user->role === 'admin')
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1.5 rounded-full">
+                                    <i class="fas fa-user-shield text-[10px]"></i> Admin
+                                </span>
+                                @else
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">
+                                    <i class="fas fa-user text-[10px]"></i> User
+                                </span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.categories.store') }}" class="p-6 space-y-5">
-                        @csrf
+                    <!-- Info Card -->
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6 lg:col-span-2">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Informasi Pengguna</h3>
+                        <div class="space-y-5">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Nama Lengkap</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ $user->nama }}</p>
+                                </div>
+                            </div>
 
-                        <div>
-                            <label for="nama" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kategori <span class="text-red-500">*</span></label>
-                            <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required autofocus
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
-                                placeholder="cth: Novel, Fiksi Ilmiah, Sejarah">
-                            @error('nama') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-envelope text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Email</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ $user->email }}</p>
+                                </div>
+                            </div>
 
-                        <div>
-                            <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi</label>
-                            <textarea name="deskripsi" id="deskripsi" rows="3"
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors resize-none"
-                                placeholder="Deskripsi singkat tentang kategori ini">{{ old('deskripsi') }}</textarea>
-                            @error('deskripsi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-phone text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Nomor Telepon</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ $user->nomor_telepon }}</p>
+                                </div>
+                            </div>
 
-                        <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
-                            <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-6 py-2.5 rounded-xl transition-colors">
-                                <i class="fas fa-save"></i> Simpan Kategori
-                            </button>
-                            <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm px-6 py-2.5 rounded-xl transition-colors">
-                                Batal
-                            </a>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-shield-halved text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Role</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1 capitalize">{{ $user->role }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-calendar text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Tanggal Daftar</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ $user->created_at->format('d F Y, H:i') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-clock text-gray-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Terakhir Diperbarui</p>
+                                    <p class="text-sm font-semibold text-gray-900 mt-1">{{ $user->updated_at->format('d F Y, H:i') }}</p>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </main>
         </div>
@@ -157,7 +213,7 @@
                 <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
@@ -166,7 +222,7 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
             </nav>

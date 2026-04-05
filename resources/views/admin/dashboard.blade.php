@@ -51,13 +51,13 @@
                 <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
@@ -152,7 +152,7 @@
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                     <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                         <h2 class="font-bold text-gray-900">Pengguna Terbaru</h2>
-                        <a href="#" class="text-orange-500 text-sm font-semibold hover:text-orange-600 transition-colors">Lihat Semua</a>
+                        <a href="{{ route('admin.users.index') }}" class="text-orange-500 text-sm font-semibold hover:text-orange-600 transition-colors">Lihat Semua</a>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
