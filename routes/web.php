@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Models\Book;
 use Illuminate\Http\Request;
@@ -56,6 +57,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // User dashboard
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('user.checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('user.checkout.store');
+    Route::get('/payment/{order}', [CheckoutController::class, 'payment'])->name('user.payment');
+    Route::post('/payment/{order}', [CheckoutController::class, 'uploadBukti'])->name('user.payment.upload');
+    Route::get('/payment/{order}/success', [CheckoutController::class, 'paymentSuccess'])->name('user.payment.success');
 });
 
 // Admin auth routes (halaman login admin terpisah)

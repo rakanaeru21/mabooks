@@ -160,6 +160,7 @@
             @foreach($books as $book)
             <div class="bg-white rounded-2xl overflow-hidden card-hover group border border-gray-100 cursor-pointer"
                  onclick="showBookDetail({
+                    book_id: {{ $book->id }},
                     judul: '{{ addslashes($book->judul) }}',
                     penulis: '{{ addslashes($book->penulis) }}',
                     penerbit: '{{ addslashes($book->penerbit ?? '-') }}',
@@ -335,9 +336,9 @@
                 <span class="text-sm text-gray-500 font-medium">Total</span>
                 <span id="cart-total" class="text-xl font-extrabold text-orange-500">Rp 0</span>
             </div>
-            <button class="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-sm shadow-orange-500/30">
+            <a href="{{ route('user.checkout') }}" class="w-full block text-center bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-sm shadow-orange-500/30">
                 <i class="fas fa-credit-card mr-2"></i>Lanjut ke Pembayaran
-            </button>
+            </a>
             <button onclick="clearCart()" class="w-full text-sm text-gray-400 hover:text-red-500 mt-3 transition-colors font-medium">
                 <i class="fas fa-trash-alt mr-1"></i>Kosongkan Keranjang
             </button>
@@ -485,6 +486,9 @@
 
         // ==================== CART ====================
         let cart = JSON.parse(localStorage.getItem('mabooks_cart') || '[]');
+        // Remove old cart items without book_id
+        cart = cart.filter(i => i.book_id);
+        localStorage.setItem('mabooks_cart', JSON.stringify(cart));
         let cartOpen = false;
 
         function toggleCart() {
@@ -512,7 +516,7 @@
             if (existing) {
                 existing.qty = Math.min(existing.qty + 1, currentBook.stok);
             } else {
-                cart.push({ judul: currentBook.judul, penulis: currentBook.penulis, harga: currentBook.harga, hargaNum: parseInt(currentBook.harga.replace(/\D/g,'')), cover: currentBook.cover, stok: currentBook.stok, qty: 1 });
+                cart.push({ book_id: currentBook.book_id, judul: currentBook.judul, penulis: currentBook.penulis, harga: currentBook.harga, hargaNum: parseInt(currentBook.harga.replace(/\D/g,'')), cover: currentBook.cover, stok: currentBook.stok, qty: 1 });
             }
             saveCart();
             closeBookDetail();
