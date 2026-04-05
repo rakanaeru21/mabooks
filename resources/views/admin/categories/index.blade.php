@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Buku - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Kelola Kategori - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -51,13 +51,13 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
             </nav>
@@ -88,7 +88,7 @@
                 <button id="mobile-sidebar-btn" class="lg:hidden text-gray-600 text-xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900">Kelola Buku</h1>
+                <h1 class="text-lg font-bold text-gray-900">Kelola Kategori</h1>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden sm:block">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
                     <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -99,78 +99,58 @@
 
             <!-- Content -->
             <main class="flex-1 p-6 lg:p-8">
-                <!-- Success Message -->
                 @if (session('success'))
                 <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
                     <i class="fas fa-check-circle"></i> {{ session('success') }}
                 </div>
                 @endif
 
-                <!-- Header -->
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Daftar Buku</h2>
-                        <p class="text-sm text-gray-500 mt-1">Total {{ $books->total() }} buku</p>
+                        <h2 class="text-xl font-bold text-gray-900">Daftar Kategori</h2>
+                        <p class="text-sm text-gray-500 mt-1">Total {{ $categories->total() }} kategori</p>
                     </div>
-                    <a href="{{ route('admin.books.create') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
-                        <i class="fas fa-plus"></i> Tambah Buku
+                    <a href="{{ route('admin.categories.create') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
+                        <i class="fas fa-plus"></i> Tambah Kategori
                     </a>
                 </div>
 
-                <!-- Books Table -->
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    <th class="px-6 py-3">Buku</th>
-                                    <th class="px-6 py-3">Penulis</th>
-                                    <th class="px-6 py-3">Kategori</th>
-                                    <th class="px-6 py-3">Harga</th>
-                                    <th class="px-6 py-3">Stok</th>
-                                    <th class="px-6 py-3">Tgl Ditambahkan</th>
+                                    <th class="px-6 py-3">Nama Kategori</th>
+                                    <th class="px-6 py-3">Deskripsi</th>
+                                    <th class="px-6 py-3">Jumlah Buku</th>
+                                    <th class="px-6 py-3">Tgl Dibuat</th>
                                     <th class="px-6 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
-                                @forelse ($books as $book)
+                                @forelse ($categories as $category)
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            @if ($book->cover)
-                                            <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="w-10 h-14 object-cover rounded-lg">
-                                            @else
-                                            <div class="w-10 h-14 bg-orange-100 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-book text-orange-500 text-sm"></i>
+                                            <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-tag text-xs"></i>
                                             </div>
-                                            @endif
-                                            <div>
-                                                <p class="text-sm font-semibold text-gray-900">{{ $book->judul }}</p>
-                                                @if ($book->isbn)
-                                                <p class="text-xs text-gray-400">ISBN: {{ $book->isbn }}</p>
-                                                @endif
-                                            </div>
+                                            <span class="text-sm font-semibold text-gray-900">{{ $category->nama }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $book->penulis }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $category->deskripsi ? Str::limit($category->deskripsi, 60) : '-' }}</td>
                                     <td class="px-6 py-4">
-                                        @if ($book->category)
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full">{{ $book->category->nama }}</span>
-                                        @else
-                                        <span class="text-xs text-gray-400">-</span>
-                                        @endif
+                                        <span class="inline-flex items-center gap-1 text-sm font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">
+                                            <i class="fas fa-book text-xs"></i> {{ $category->books_count }}
+                                        </span>
                                     </td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-sm font-semibold {{ $book->stok > 0 ? 'text-green-600' : 'text-red-500' }}">{{ $book->stok }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $book->created_at->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $category->created_at->format('d M Y') }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="{{ route('admin.books.edit', $book) }}" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors" title="Edit">
+                                            <a href="{{ route('admin.categories.edit', $category) }}" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors" title="Edit">
                                                 <i class="fas fa-pen text-xs"></i>
                                             </a>
-                                            <form method="POST" action="{{ route('admin.books.destroy', $book) }}" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                            <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('Yakin ingin menghapus kategori ini? Buku yang terkait akan kehilangan kategorinya.')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors" title="Hapus">
@@ -182,9 +162,9 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-10 text-center text-sm text-gray-400">
-                                        <i class="fas fa-book-open text-3xl text-gray-300 mb-3 block"></i>
-                                        Belum ada buku. <a href="{{ route('admin.books.create') }}" class="text-orange-500 font-semibold hover:underline">Tambah buku pertama</a>
+                                    <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
+                                        <i class="fas fa-tags text-3xl text-gray-300 mb-3 block"></i>
+                                        Belum ada kategori. <a href="{{ route('admin.categories.create') }}" class="text-orange-500 font-semibold hover:underline">Tambah kategori pertama</a>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -192,10 +172,9 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-                    @if ($books->hasPages())
+                    @if ($categories->hasPages())
                     <div class="px-6 py-4 border-t border-gray-100">
-                        {{ $books->links() }}
+                        {{ $categories->links() }}
                     </div>
                     @endif
                 </div>
@@ -223,13 +202,13 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
             </nav>

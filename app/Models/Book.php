@@ -19,5 +19,11 @@ class Book extends Model
         'stok',
         'deskripsi',
         'cover',
+        'category_id',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
