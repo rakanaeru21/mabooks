@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Kelola Buku - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -30,12 +30,10 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-    <!-- Sidebar + Main -->
     <div class="flex min-h-screen">
 
         <!-- Sidebar -->
         <aside class="w-64 bg-gray-900 text-white flex-shrink-0 hidden lg:flex flex-col">
-            <!-- Logo -->
             <div class="px-6 py-5 border-b border-gray-800">
                 <a href="/admin/dashboard" class="flex items-center gap-2">
                     <div class="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -46,15 +44,14 @@
                 <p class="text-[11px] text-gray-500 mt-1 ml-11">Admin Panel</p>
             </div>
 
-            <!-- Nav -->
             <nav class="flex-1 px-4 py-6 space-y-1">
-                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
@@ -65,7 +62,6 @@
                 </a>
             </nav>
 
-            <!-- User Info -->
             <div class="px-4 py-4 border-t border-gray-800">
                 <div class="flex items-center gap-3 px-3">
                     <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -89,11 +85,10 @@
         <div class="flex-1 flex flex-col">
             <!-- Top bar -->
             <header class="bg-white border-b border-gray-200 px-6 lg:px-8 py-4 flex items-center justify-between">
-                <!-- Mobile menu -->
                 <button id="mobile-sidebar-btn" class="lg:hidden text-gray-600 text-xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900">Dashboard</h1>
+                <h1 class="text-lg font-bold text-gray-900">Kelola Buku</h1>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden sm:block">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
                     <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -104,89 +99,97 @@
 
             <!-- Content -->
             <main class="flex-1 p-6 lg:p-8">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-users text-blue-600"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-green-500 bg-green-50 px-2 py-1 rounded-full"><i class="fas fa-arrow-up mr-1"></i>Aktif</span>
-                        </div>
-                        <p class="text-2xl font-extrabold text-gray-900">{{ $totalUsers }}</p>
-                        <p class="text-sm text-gray-500 mt-1">Total Pengguna</p>
-                    </div>
+                <!-- Success Message -->
+                @if (session('success'))
+                <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+                @endif
 
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-user-shield text-orange-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-2xl font-extrabold text-gray-900">{{ $totalAdmins }}</p>
-                        <p class="text-sm text-gray-500 mt-1">Total Admin</p>
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Daftar Buku</h2>
+                        <p class="text-sm text-gray-500 mt-1">Total {{ $books->total() }} buku</p>
                     </div>
-
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-book text-purple-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-2xl font-extrabold text-gray-900">{{ $totalBooks }}</p>
-                        <p class="text-sm text-gray-500 mt-1">Total Buku</p>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-shopping-bag text-green-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-2xl font-extrabold text-gray-900">0</p>
-                        <p class="text-sm text-gray-500 mt-1">Total Pesanan</p>
-                    </div>
+                    <a href="{{ route('admin.books.create') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
+                        <i class="fas fa-plus"></i> Tambah Buku
+                    </a>
                 </div>
 
-                <!-- Recent Users Table -->
+                <!-- Books Table -->
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                        <h2 class="font-bold text-gray-900">Pengguna Terbaru</h2>
-                        <a href="#" class="text-orange-500 text-sm font-semibold hover:text-orange-600 transition-colors">Lihat Semua</a>
-                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    <th class="px-6 py-3">Nama</th>
-                                    <th class="px-6 py-3">Email</th>
-                                    <th class="px-6 py-3">No. Telepon</th>
-                                    <th class="px-6 py-3">Tgl Daftar</th>
+                                    <th class="px-6 py-3">Buku</th>
+                                    <th class="px-6 py-3">Penulis</th>
+                                    <th class="px-6 py-3">Harga</th>
+                                    <th class="px-6 py-3">Stok</th>
+                                    <th class="px-6 py-3">Tgl Ditambahkan</th>
+                                    <th class="px-6 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
-                                @forelse ($recentUsers as $u)
+                                @forelse ($books as $book)
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-xs">
-                                                {{ strtoupper(substr($u->nama, 0, 1)) }}
+                                            @if ($book->cover)
+                                            <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="w-10 h-14 object-cover rounded-lg">
+                                            @else
+                                            <div class="w-10 h-14 bg-orange-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-book text-orange-500 text-sm"></i>
                                             </div>
-                                            <span class="text-sm font-semibold text-gray-900">{{ $u->nama }}</span>
+                                            @endif
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-900">{{ $book->judul }}</p>
+                                                @if ($book->isbn)
+                                                <p class="text-xs text-gray-400">ISBN: {{ $book->isbn }}</p>
+                                                @endif
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $u->email }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $u->nomor_telepon }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $u->created_at->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $book->penulis }}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm font-semibold {{ $book->stok > 0 ? 'text-green-600' : 'text-red-500' }}">{{ $book->stok }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $book->created_at->format('d M Y') }}</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <a href="{{ route('admin.books.edit', $book) }}" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors" title="Edit">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </a>
+                                            <form method="POST" action="{{ route('admin.books.destroy', $book) }}" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors" title="Hapus">
+                                                    <i class="fas fa-trash text-xs"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">Belum ada pengguna terdaftar.</td>
+                                    <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-400">
+                                        <i class="fas fa-book-open text-3xl text-gray-300 mb-3 block"></i>
+                                        Belum ada buku. <a href="{{ route('admin.books.create') }}" class="text-orange-500 font-semibold hover:underline">Tambah buku pertama</a>
+                                    </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination -->
+                    @if ($books->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-100">
+                        {{ $books->links() }}
+                    </div>
+                    @endif
                 </div>
             </main>
         </div>
@@ -206,13 +209,13 @@
                 <button id="close-sidebar-btn" class="text-gray-400 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
             <nav class="flex-1 px-4 py-6 space-y-1">
-                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">

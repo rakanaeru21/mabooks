@@ -21,7 +21,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')], $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
@@ -46,10 +46,10 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'nomor_telepon' => $request->nomor_telepon,
-            'password' => Hash::make($request->password),
+            'nama' => $request->input('nama'),
+            'email' => $request->input('email'),
+            'nomor_telepon' => $request->input('nomor_telepon'),
+            'password' => Hash::make($request->input('password')),
         ]);
 
         Auth::login($user);

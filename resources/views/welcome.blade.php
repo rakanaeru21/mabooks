@@ -275,106 +275,99 @@
     </section>
 
     <!-- ==================== BUKU POPULER SECTION ==================== -->
-    <section class="bg-gray-50">
+    <section id="buku" class="bg-gray-50">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20 md:py-28">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-14 gap-4">
+            <!-- Header + Search in one row -->
+            <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 mb-10">
                 <div>
                     <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">Best Seller</span>
                     <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">Buku <span class="text-orange-500">Terlaris</span></h2>
                 </div>
-                <a href="#" class="text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors inline-flex items-center gap-1.5">
-                    Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
-                </a>
+
+                <!-- Search -->
+                <form method="GET" action="/#buku" class="w-full lg:w-auto">
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex-1 lg:w-80">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, atau penerbit..."
+                                class="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-full text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors shadow-sm">
+                        </div>
+                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors shadow-sm shadow-orange-500/20">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        @if (request('search'))
+                        <a href="/#buku" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500 transition-colors shrink-0" title="Reset">
+                            <i class="fas fa-times text-sm"></i>
+                        </a>
+                        @endif
+                    </div>
+                </form>
             </div>
 
+            @if (request('search'))
+            <div class="mb-8 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-4 py-2 rounded-full">
+                <i class="fas fa-filter text-xs"></i>
+                Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $books->count() }} buku ditemukan
+            </div>
+            @endif
+
+            @if ($books->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Buku 1 -->
-                <div class="bg-white rounded-2xl overflow-hidden card-hover group">
-                    <div class="bg-gradient-to-br from-orange-100 to-orange-50 p-8 flex items-center justify-center h-56 relative">
-                        <i class="fas fa-book text-orange-300 text-7xl group-hover:scale-110 transition-transform duration-300"></i>
-                        <span class="absolute top-4 left-4 bg-orange-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Baru</span>
+                @foreach ($books as $book)
+                <div class="bg-white rounded-2xl overflow-hidden card-hover group border border-gray-100 cursor-pointer"
+                     onclick="showBookDetail({
+                        judul: '{{ addslashes($book->judul) }}',
+                        penulis: '{{ addslashes($book->penulis) }}',
+                        penerbit: '{{ addslashes($book->penerbit ?? '-') }}',
+                        tahun: '{{ $book->tahun_terbit ?? '-' }}',
+                        isbn: '{{ $book->isbn ?? '-' }}',
+                        harga: 'Rp {{ number_format($book->harga, 0, ',', '.') }}',
+                        stok: {{ $book->stok }},
+                        deskripsi: '{{ addslashes($book->deskripsi ?? 'Tidak ada deskripsi.') }}',
+                        cover: '{{ $book->cover ? asset('storage/' . $book->cover) : '' }}'
+                     })">
+                    <div class="bg-gradient-to-br from-orange-50 to-white flex items-center justify-center h-56 relative overflow-hidden">
+                        @if ($book->cover)
+                        <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                        <div class="flex flex-col items-center gap-2">
+                            <i class="fas fa-book text-orange-200 text-6xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        @endif
+                        @if ($book->stok < 1)
+                        <span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Habis</span>
+                        @endif
                     </div>
                     <div class="p-5">
-                        <p class="text-xs text-orange-500 font-semibold mb-1">Novel</p>
-                        <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">Laut Bercerita</h3>
-                        <p class="text-xs text-gray-400 mb-3">Leila S. Chudori</p>
+                        <h3 class="font-bold text-gray-900 mb-1 line-clamp-1 text-[15px]">{{ $book->judul }}</h3>
+                        <p class="text-xs text-gray-400 mb-4">{{ $book->penulis }}</p>
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400 line-through">Rp 98.000</p>
-                                <p class="text-lg font-extrabold text-gray-900">Rp 75.000</p>
-                            </div>
-                            <button class="w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-colors">
-                                <i class="fas fa-cart-plus text-sm"></i>
-                            </button>
+                            <p class="text-lg font-extrabold text-orange-500">Rp {{ number_format($book->harga, 0, ',', '.') }}</p>
+                            <span class="text-[11px] font-semibold {{ $book->stok > 0 ? 'text-green-600 bg-green-50' : 'text-red-500 bg-red-50' }} px-2.5 py-1 rounded-full">
+                                {{ $book->stok > 0 ? 'Stok ' . $book->stok : 'Habis' }}
+                            </span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Buku 2 -->
-                <div class="bg-white rounded-2xl overflow-hidden card-hover group">
-                    <div class="bg-gradient-to-br from-orange-100 to-orange-50 p-8 flex items-center justify-center h-56 relative">
-                        <i class="fas fa-book text-orange-300 text-7xl group-hover:scale-110 transition-transform duration-300"></i>
-                        <span class="absolute top-4 left-4 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">-30%</span>
-                    </div>
-                    <div class="p-5">
-                        <p class="text-xs text-orange-500 font-semibold mb-1">Bisnis</p>
-                        <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">Atomic Habits</h3>
-                        <p class="text-xs text-gray-400 mb-3">James Clear</p>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400 line-through">Rp 120.000</p>
-                                <p class="text-lg font-extrabold text-gray-900">Rp 84.000</p>
-                            </div>
-                            <button class="w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-colors">
-                                <i class="fas fa-cart-plus text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Buku 3 -->
-                <div class="bg-white rounded-2xl overflow-hidden card-hover group">
-                    <div class="bg-gradient-to-br from-orange-100 to-orange-50 p-8 flex items-center justify-center h-56 relative">
-                        <i class="fas fa-book text-orange-300 text-7xl group-hover:scale-110 transition-transform duration-300"></i>
-                        <span class="absolute top-4 left-4 bg-orange-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Populer</span>
-                    </div>
-                    <div class="p-5">
-                        <p class="text-xs text-orange-500 font-semibold mb-1">Sains</p>
-                        <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">Sapiens</h3>
-                        <p class="text-xs text-gray-400 mb-3">Yuval N. Harari</p>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400 line-through">Rp 135.000</p>
-                                <p class="text-lg font-extrabold text-gray-900">Rp 99.000</p>
-                            </div>
-                            <button class="w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-colors">
-                                <i class="fas fa-cart-plus text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Buku 4 -->
-                <div class="bg-white rounded-2xl overflow-hidden card-hover group">
-                    <div class="bg-gradient-to-br from-orange-100 to-orange-50 p-8 flex items-center justify-center h-56 relative">
-                        <i class="fas fa-book text-orange-300 text-7xl group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-5">
-                        <p class="text-xs text-orange-500 font-semibold mb-1">Edukasi</p>
-                        <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">Filosofi Teras</h3>
-                        <p class="text-xs text-gray-400 mb-3">Henry Manampiring</p>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400 line-through">Rp 95.000</p>
-                                <p class="text-lg font-extrabold text-gray-900">Rp 69.000</p>
-                            </div>
-                            <button class="w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center transition-colors">
-                                <i class="fas fa-cart-plus text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
+            @else
+            <div class="text-center py-20 bg-white rounded-2xl border border-gray-100">
+                <i class="fas fa-search text-5xl text-gray-200 mb-4 block"></i>
+                <p class="text-gray-400 text-lg font-medium">
+                    @if (request('search'))
+                        Tidak ada buku yang cocok dengan pencarian.
+                    @else
+                        Belum ada buku yang tersedia.
+                    @endif
+                </p>
+                @if (request('search'))
+                <a href="/#buku" class="inline-flex items-center gap-2 mt-4 text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors">
+                    <i class="fas fa-arrow-left text-xs"></i> Tampilkan semua buku
+                </a>
+                @endif
+            </div>
+            @endif
         </div>
     </section>
 
@@ -613,6 +606,83 @@
         </div>
     </footer>
 
+    <!-- ==================== BOOK DETAIL MODAL ==================== -->
+    <div id="book-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeBookDetail()"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-modal">
+            <!-- Close button -->
+            <button onclick="closeBookDetail()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+
+            <div class="flex flex-col sm:flex-row overflow-y-auto max-h-[90vh]">
+                <!-- Cover -->
+                <div id="modal-cover-wrap" class="sm:w-2/5 shrink-0 bg-gradient-to-br from-orange-50 to-white flex items-center justify-center min-h-[240px] sm:min-h-[360px] relative">
+                    <img id="modal-cover-img" src="" alt="" class="hidden h-full w-full object-cover">
+                    <div id="modal-cover-placeholder" class="flex flex-col items-center gap-2">
+                        <i class="fas fa-book text-orange-200 text-7xl"></i>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="sm:w-3/5 p-6 sm:p-8 flex flex-col">
+                    <div class="flex-1">
+                        <h2 id="modal-judul" class="text-xl font-extrabold text-gray-900 mb-1 pr-8"></h2>
+                        <p id="modal-penulis" class="text-sm text-gray-500 mb-5"></p>
+
+                        <div class="flex items-center gap-3 mb-6">
+                            <p id="modal-harga" class="text-2xl font-extrabold text-orange-500"></p>
+                            <span id="modal-stok" class="text-xs font-semibold px-3 py-1 rounded-full"></span>
+                        </div>
+
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <i class="fas fa-building text-gray-400 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-gray-400 uppercase tracking-wider">Penerbit</p>
+                                    <p id="modal-penerbit" class="text-gray-700 font-medium"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <i class="fas fa-calendar text-gray-400 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-gray-400 uppercase tracking-wider">Tahun Terbit</p>
+                                    <p id="modal-tahun" class="text-gray-700 font-medium"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <i class="fas fa-barcode text-gray-400 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] text-gray-400 uppercase tracking-wider">ISBN</p>
+                                    <p id="modal-isbn" class="text-gray-700 font-medium"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-4">
+                            <p class="text-[11px] text-gray-400 uppercase tracking-wider mb-2">Deskripsi</p>
+                            <p id="modal-deskripsi" class="text-sm text-gray-600 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-modal { animation: modalIn 0.25s ease-out; }
+    </style>
+
     <!-- ==================== MOBILE MENU SCRIPT ==================== -->
     <script>
         const menuBtn = document.getElementById('menu-btn');
@@ -632,6 +702,50 @@
                 icon.classList.add('fa-bars');
                 icon.classList.remove('fa-xmark');
             });
+        });
+
+        // Book detail modal
+        function showBookDetail(book) {
+            document.getElementById('modal-judul').textContent = book.judul;
+            document.getElementById('modal-penulis').textContent = book.penulis;
+            document.getElementById('modal-harga').textContent = book.harga;
+            document.getElementById('modal-penerbit').textContent = book.penerbit;
+            document.getElementById('modal-tahun').textContent = book.tahun;
+            document.getElementById('modal-isbn').textContent = book.isbn;
+            document.getElementById('modal-deskripsi').textContent = book.deskripsi;
+
+            const img = document.getElementById('modal-cover-img');
+            const placeholder = document.getElementById('modal-cover-placeholder');
+            if (book.cover) {
+                img.src = book.cover;
+                img.alt = book.judul;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            const stokEl = document.getElementById('modal-stok');
+            if (book.stok > 0) {
+                stokEl.textContent = 'Stok ' + book.stok;
+                stokEl.className = 'text-xs font-semibold px-3 py-1 rounded-full text-green-600 bg-green-50';
+            } else {
+                stokEl.textContent = 'Habis';
+                stokEl.className = 'text-xs font-semibold px-3 py-1 rounded-full text-red-500 bg-red-50';
+            }
+
+            document.getElementById('book-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookDetail() {
+            document.getElementById('book-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeBookDetail();
         });
     </script>
 
