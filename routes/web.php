@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\CustomerServiceController;
 use App\Http\Controllers\User\UserDashboardController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment/{order}', [CheckoutController::class, 'payment'])->name('user.payment');
     Route::post('/payment/{order}', [CheckoutController::class, 'uploadBukti'])->name('user.payment.upload');
     Route::get('/payment/{order}/success', [CheckoutController::class, 'paymentSuccess'])->name('user.payment.success');
+    Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('user.customer-service');
+    Route::post('/customer-service', [CustomerServiceController::class, 'store'])->name('user.customer-service.store');
 });
 
 // Admin auth routes (halaman login admin terpisah)
@@ -80,4 +84,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::get('/messages', [MessageController::class, 'index'])->name('admin.messages.index');
+    Route::get('/messages/{message}', [MessageController::class, 'show'])->name('admin.messages.show');
 });

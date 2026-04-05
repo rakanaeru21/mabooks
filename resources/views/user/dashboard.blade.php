@@ -64,7 +64,7 @@
 
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
                 <li><a href="{{ route('user.dashboard') }}" class="text-orange-500 font-semibold transition-colors">Beranda</a></li>
-                <li><a href="/#" class="hover:text-orange-500 transition-colors">Media</a></li>
+                <li><a href="{{ route('user.customer-service') }}" class="hover:text-orange-500 transition-colors">Customer Service</a></li>
                 <li class="flex items-center gap-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xs">

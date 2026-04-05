@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tambah Kategori - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Detail Pesan - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -54,13 +54,13 @@
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
-                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-comments w-5 text-center"></i> Pesan Masuk
                 </a>
             </nav>
@@ -90,7 +90,12 @@
                 <button id="mobile-sidebar-btn" class="lg:hidden text-gray-600 text-xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900">Tambah Kategori</h1>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('admin.messages.index') }}" class="text-gray-400 hover:text-orange-500 transition-colors">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h1 class="text-lg font-bold text-gray-900">Detail Pesan</h1>
+                </div>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-500 hidden sm:block">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
                     <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -100,50 +105,90 @@
             </header>
 
             <main class="flex-1 p-6 lg:p-8">
-                <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6 transition-colors">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Kategori
-                </a>
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden max-w-xl">
-                    <div class="px-6 py-5 border-b border-gray-100">
-                        <h2 class="font-bold text-gray-900">Informasi Kategori</h2>
-                        <p class="text-sm text-gray-500 mt-1">Isi detail kategori baru</p>
-                    </div>
-
-                    <form method="POST" action="{{ route('admin.categories.store') }}" class="p-6 space-y-5">
-                        @csrf
-
-                        <div>
-                            <label for="nama" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kategori <span class="text-red-500">*</span></label>
-                            <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required autofocus
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
-                                placeholder="cth: Novel, Fiksi Ilmiah, Sejarah">
-                            @error('nama') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <!-- Pesan Content -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Header -->
+                            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                                <div class="flex flex-wrap items-center gap-2 mb-4">
+                                    <span class="text-xs font-bold uppercase px-2.5 py-1 rounded-full
+                                        @if($message->tipe == 'ulasan') bg-yellow-100 text-yellow-700
+                                        @elseif($message->tipe == 'keluhan') bg-red-100 text-red-700
+                                        @elseif($message->tipe == 'masukan') bg-blue-100 text-blue-700
+                                        @else bg-green-100 text-green-700
+                                        @endif">
+                                        @if($message->tipe == 'ulasan') <i class="fas fa-star mr-1"></i>
+                                        @elseif($message->tipe == 'keluhan') <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        @elseif($message->tipe == 'masukan') <i class="fas fa-lightbulb mr-1"></i>
+                                        @else <i class="fas fa-question-circle mr-1"></i>
+                                        @endif
+                                        {{ ucfirst($message->tipe) }}
+                                    </span>
+                                    <span class="text-xs font-bold bg-green-100 text-green-700 px-2.5 py-1 rounded-full">
+                                        <i class="fas fa-check mr-1"></i>Sudah Dibaca
+                                    </span>
+                                </div>
+                                <h2 class="text-xl font-extrabold text-gray-900 mb-4">{{ $message->subjek }}</h2>
+                                <div class="bg-gray-50 rounded-xl p-5">
+                                    <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ $message->pesan }}</p>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-4"><i class="fas fa-clock mr-1"></i>Dikirim pada {{ $message->created_at->format('d M Y, H:i') }}</p>
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi</label>
-                            <textarea name="deskripsi" id="deskripsi" rows="3"
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors resize-none"
-                                placeholder="Deskripsi singkat tentang kategori ini">{{ old('deskripsi') }}</textarea>
-                            @error('deskripsi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                        <!-- Sidebar Info -->
+                        <div class="space-y-6">
+                            <!-- Pengirim Info -->
+                            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                                <h3 class="font-bold text-gray-900 mb-4 text-sm"><i class="fas fa-user text-orange-500 mr-2"></i>Informasi Pengirim</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-lg">
+                                        {{ strtoupper(substr($message->user->nama, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-900">{{ $message->user->nama }}</p>
+                                        <p class="text-xs text-gray-400">{{ $message->user->email }}</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                            <i class="fas fa-phone text-gray-400 text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] text-gray-400 uppercase tracking-wider">Telepon</p>
+                                            <p class="text-gray-700 font-medium">{{ $message->user->nomor_telepon ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                            <i class="fas fa-calendar text-gray-400 text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] text-gray-400 uppercase tracking-wider">Terdaftar</p>
+                                            <p class="text-gray-700 font-medium">{{ $message->user->created_at->format('d M Y') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ route('admin.users.show', $message->user) }}" class="mt-4 inline-flex items-center gap-1.5 text-orange-500 hover:text-orange-600 text-xs font-semibold transition-colors">
+                                    <i class="fas fa-external-link-alt"></i> Lihat Profil Lengkap
+                                </a>
+                            </div>
 
-                        <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
-                            <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-6 py-2.5 rounded-xl transition-colors">
-                                <i class="fas fa-save"></i> Simpan Kategori
-                            </button>
-                            <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm px-6 py-2.5 rounded-xl transition-colors">
-                                Batal
+                            <!-- Back -->
+                            <a href="{{ route('admin.messages.index') }}" class="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-xl transition-colors text-sm">
+                                <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
                             </a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Mobile Sidebar Overlay -->
+    <!-- Mobile Sidebar -->
     <div id="mobile-sidebar-overlay" class="hidden fixed inset-0 z-50 lg:hidden">
         <div class="absolute inset-0 bg-black/50" id="mobile-sidebar-backdrop"></div>
         <aside class="absolute left-0 top-0 bottom-0 w-64 bg-gray-900 text-white flex flex-col">
@@ -160,19 +205,19 @@
                 <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-users w-5 text-center"></i> Pengguna
                 </a>
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
-                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
-                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-comments w-5 text-center"></i> Pesan Masuk
                 </a>
             </nav>
