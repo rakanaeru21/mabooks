@@ -283,8 +283,8 @@
     </footer>
 
     <!-- ==================== FLOATING CART BUTTON ==================== -->
-    <button id="cart-btn" onclick="toggleCart()" class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-gray-900 hover:bg-orange-500 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200">
-        <i class="fas fa-shopping-cart text-sm"></i>
+    <button id="cart-btn" onclick="toggleCart()" class="fixed bottom-8 right-8 z-50 w-16 h-16 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200">
+        <i class="fas fa-shopping-cart text-lg"></i>
         <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center hidden">0</span>
     </button>
 

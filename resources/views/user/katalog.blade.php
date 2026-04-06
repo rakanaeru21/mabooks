@@ -42,19 +42,27 @@
         }
         .card-hover:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
             border-color: #FDBA74;
         }
         .search-input:focus {
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
         }
+        /* Sidebar scrollbar */
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 999px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        /* Mobile category scrollbar hide */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
 
     <!-- ==================== NAVBAR ==================== -->
-    <nav class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+    <nav class="bg-white/90 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 border-b border-gray-200/60 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-3.5 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2">
                 <div class="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
                     <i class="fas fa-book-open text-white text-sm"></i>
@@ -111,101 +119,139 @@
         </div>
     </nav>
 
-    <!-- ==================== HERO ==================== -->
-    <section class="bg-white border-b border-gray-100 pt-24 pb-8">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <!-- ==================== FIXED SIDEBAR KATEGORI ==================== -->
+    <aside class="hidden lg:flex lg:flex-col fixed top-[65px] left-0 w-64 h-[calc(100vh-65px)] z-40 bg-white border-r border-gray-200/60 shadow-[2px_0_8px_-2px_rgba(0,0,0,0.04)]">
+        <!-- Sidebar Header -->
+        <div class="px-5 pt-6 pb-4 border-b border-gray-100">
+            <div class="flex items-center gap-2.5 mb-1">
+                <div class="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-layer-group text-orange-500 text-xs"></i>
+                </div>
                 <div>
-                    <nav class="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                        <a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a>
-                        <span>/</span>
-                        <span class="text-gray-600 font-medium">Katalog Buku</span>
-                    </nav>
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Katalog Buku</h1>
-                    <p class="text-gray-500 mt-1 text-sm">Jelajahi seluruh koleksi buku berdasarkan kategori.</p>
+                    <h2 class="text-sm font-bold text-gray-900 leading-tight">Kategori</h2>
+                    <p class="text-[11px] text-gray-400">Filter koleksi buku</p>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Sidebar Links -->
+        <div class="flex-1 overflow-y-auto sidebar-scroll px-3 py-3">
+            <div class="space-y-0.5">
+                <a href="{{ route('user.katalog', request()->only('search')) }}"
+                   class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150
+                   {{ !$activeCategory ? 'bg-orange-500 text-white font-semibold shadow-sm shadow-orange-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fas fa-book-open text-xs {{ !$activeCategory ? 'text-orange-100' : 'text-gray-300' }}"></i>
+                        <span>Semua Buku</span>
+                    </div>
+                    <span class="text-xs font-medium px-1.5 py-0.5 rounded-full {{ !$activeCategory ? 'bg-orange-400/30 text-white' : 'bg-gray-100 text-gray-400' }}">{{ $books->total() }}</span>
+                </a>
+
+                @foreach($categories as $cat)
+                <a href="{{ route('user.katalog', array_merge(request()->only('search'), ['category' => $cat->id])) }}"
+                   class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150
+                   {{ $activeCategory == $cat->id ? 'bg-orange-500 text-white font-semibold shadow-sm shadow-orange-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fas fa-tag text-xs {{ $activeCategory == $cat->id ? 'text-orange-100' : 'text-gray-300' }}"></i>
+                        <span>{{ $cat->nama }}</span>
+                    </div>
+                    <span class="text-xs font-medium px-1.5 py-0.5 rounded-full {{ $activeCategory == $cat->id ? 'bg-orange-400/30 text-white' : 'bg-gray-100 text-gray-400' }}">{{ $cat->books_count }}</span>
+                </a>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="px-5 py-4 border-t border-gray-100">
+            <p class="text-[11px] text-gray-300 text-center">&copy; {{ date('Y') }} MaBooks</p>
+        </div>
+    </aside>
 
     <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
-        <div class="flex flex-col lg:flex-row gap-8">
+    <main class="lg:ml-64 pt-[65px]">
+        <!-- Page Header -->
+        <div class="bg-white border-b border-gray-100">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 py-6">
+                <nav class="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                    <a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a>
+                    <i class="fas fa-chevron-right text-[8px] text-gray-300"></i>
+                    <span class="text-gray-600 font-medium">Katalog Buku</span>
+                </nav>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900">Katalog Buku</h1>
+                <p class="text-gray-400 mt-0.5 text-sm">Jelajahi seluruh koleksi buku berdasarkan kategori.</p>
+            </div>
+        </div>
 
-            <!-- ===== SIDEBAR KATEGORI ===== -->
-            <aside class="lg:w-64 shrink-0">
-                <div class="bg-white rounded-xl border border-gray-200 p-5 lg:sticky lg:top-28">
-                    <h2 class="text-sm font-bold text-gray-900 mb-4">Kategori</h2>
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 py-8">
 
-                    <div class="space-y-1">
-                        <a href="{{ route('user.katalog', request()->only('search')) }}"
-                           class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
-                           {{ !$activeCategory ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            <span>Semua Buku</span>
-                            <span class="text-xs {{ !$activeCategory ? 'text-orange-400' : 'text-gray-400' }}">{{ $books->total() }}</span>
-                        </a>
-
-                        @foreach($categories as $cat)
-                        <a href="{{ route('user.katalog', array_merge(request()->only('search'), ['category' => $cat->id])) }}"
-                           class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
-                           {{ $activeCategory == $cat->id ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            <span>{{ $cat->nama }}</span>
-                            <span class="text-xs {{ $activeCategory == $cat->id ? 'text-orange-400' : 'text-gray-400' }}">{{ $cat->books_count }}</span>
-                        </a>
-                        @endforeach
-                    </div>
+            <!-- ===== MOBILE KATEGORI (horizontal scroll) ===== -->
+            <div class="lg:hidden mb-6 -mx-6 px-6 overflow-x-auto hide-scrollbar">
+                <div class="flex items-center gap-2 pb-1">
+                    <a href="{{ route('user.katalog', request()->only('search')) }}"
+                       class="shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-150
+                       {{ !$activeCategory ? 'bg-orange-500 text-white shadow-sm shadow-orange-200' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600' }}">
+                        Semua
+                    </a>
+                    @foreach($categories as $cat)
+                    <a href="{{ route('user.katalog', array_merge(request()->only('search'), ['category' => $cat->id])) }}"
+                       class="shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-150
+                       {{ $activeCategory == $cat->id ? 'bg-orange-500 text-white shadow-sm shadow-orange-200' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600' }}">
+                        {{ $cat->nama }}
+                    </a>
+                    @endforeach
                 </div>
-            </aside>
+            </div>
 
             <!-- ===== KONTEN BUKU ===== -->
-            <div class="flex-1 min-w-0">
+            <div class="min-w-0">
                 <!-- Search Bar -->
-                <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6 flex flex-col sm:flex-row items-center gap-3">
-                    <form method="GET" action="{{ route('user.katalog') }}" class="flex-1 w-full flex items-center gap-3">
+                <div class="bg-white rounded-xl border border-gray-200/80 p-3 mb-6 shadow-sm">
+                    <form method="GET" action="{{ route('user.katalog') }}" class="flex items-center gap-2">
                         @if($activeCategory)
                         <input type="hidden" name="category" value="{{ $activeCategory }}">
                         @endif
                         <div class="relative flex-1">
                             <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, atau penerbit..."
-                                class="search-input w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-orange-400 transition-all">
+                                class="search-input w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50 focus:bg-white focus:outline-none focus:border-orange-400 transition-all">
                         </div>
-                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors">
-                            Cari
+                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors shadow-sm shadow-orange-100">
+                            <i class="fas fa-search mr-1.5 text-xs"></i>Cari
                         </button>
                         @if(request('search'))
-                        <a href="{{ route('user.katalog', $activeCategory ? ['category' => $activeCategory] : []) }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 transition-colors shrink-0" title="Reset">
+                        <a href="{{ route('user.katalog', $activeCategory ? ['category' => $activeCategory] : []) }}" class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-400 transition-colors shrink-0" title="Reset">
                             <i class="fas fa-times text-xs"></i>
                         </a>
                         @endif
                     </form>
-                    <div class="flex items-center gap-2 text-sm text-gray-400 shrink-0">
-                        <span><strong class="text-gray-700">{{ $books->total() }}</strong> buku</span>
+                    <div class="flex items-center justify-between mt-2 px-1">
+                        <div class="text-xs text-gray-400">
+                            <strong class="text-gray-600">{{ $books->total() }}</strong> buku ditemukan
+                        </div>
+                        @if($activeCategory && $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->nama)
+                        <div class="flex items-center gap-1.5 text-xs">
+                            <span class="text-gray-400">Kategori:</span>
+                            <span class="font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">{{ $activeCategoryName }}</span>
+                            <a href="{{ route('user.katalog', request()->only('search')) }}" class="text-gray-300 hover:text-red-400 transition-colors" title="Hapus filter">
+                                <i class="fas fa-times-circle"></i>
+                            </a>
+                        </div>
+                        @endif
                     </div>
                 </div>
 
                 @if(request('search'))
-                <div class="mb-5 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-3 py-1.5 rounded-lg">
+                <div class="mb-5 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-3.5 py-2 rounded-lg border border-orange-100">
+                    <i class="fas fa-search text-orange-300 text-xs"></i>
                     Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $books->total() }} ditemukan
-                </div>
-                @endif
-
-                @php
-                    $activeCategoryName = $activeCategory ? $categories->firstWhere('id', $activeCategory)?->nama : null;
-                @endphp
-                @if($activeCategoryName)
-                <div class="mb-5 flex items-center gap-2">
-                    <span class="text-sm text-gray-500">Kategori:</span>
-                    <span class="text-sm font-semibold text-gray-900">{{ $activeCategoryName }}</span>
-                    <a href="{{ route('user.katalog', request()->only('search')) }}" class="text-xs text-gray-400 hover:text-red-500 ml-1 transition-colors">&times; Hapus filter</a>
                 </div>
                 @endif
 
                 <!-- Book Grid -->
                 @if($books->count() > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                     @foreach($books as $book)
-                    <div class="bg-white rounded-xl overflow-hidden card-hover group border border-gray-200 cursor-pointer"
+                    <div class="bg-white rounded-xl overflow-hidden card-hover group border border-gray-200/80 cursor-pointer shadow-sm"
                          onclick="showBookDetail({
                             book_id: {{ $book->id }},
                             judul: '{{ addslashes($book->judul) }}',
@@ -252,13 +298,13 @@
                     {{ $books->withQueryString()->links() }}
                 </div>
                 @else
-                <div class="text-center py-20 bg-white rounded-xl border border-gray-200">
-                    <i class="fas fa-search text-4xl text-gray-200 mb-3 block"></i>
+                <div class="text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <i class="fas fa-book-open text-4xl text-gray-200 mb-3 block"></i>
                     <p class="text-gray-400 text-base font-medium">
                         @if(request('search'))
                             Tidak ada buku yang cocok dengan pencarian "{{ request('search') }}".
-                        @elseif($activeCategoryName)
-                            Belum ada buku dalam kategori "{{ $activeCategoryName }}".
+                        @elseif($activeCategory && ($activeCatName = $categories->firstWhere('id', $activeCategory)?->nama))
+                            Belum ada buku dalam kategori "{{ $activeCatName }}".
                         @else
                             Belum ada buku yang tersedia.
                         @endif
@@ -275,8 +321,8 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="bg-gray-900 mt-10">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+    <footer class="bg-gray-900 mt-10 lg:ml-64">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 py-10">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
                 <div>
                     <a href="/" class="flex items-center gap-2 mb-4">
@@ -317,8 +363,8 @@
     </footer>
 
     <!-- ==================== FLOATING CART BUTTON ==================== -->
-    <button id="cart-btn" onclick="toggleCart()" class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-gray-900 hover:bg-orange-500 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200">
-        <i class="fas fa-shopping-cart text-sm"></i>
+    <button id="cart-btn" onclick="toggleCart()" class="fixed bottom-8 right-8 z-50 w-16 h-16 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200">
+        <i class="fas fa-shopping-cart text-lg"></i>
         <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center hidden">0</span>
     </button>
 
