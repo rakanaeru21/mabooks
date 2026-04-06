@@ -45,6 +45,7 @@
             </a>
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
                 <li><a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a></li>
+                <li><a href="{{ route('user.orders') }}" class="hover:text-orange-500 transition-colors">Pesanan</a></li>
                 <li class="flex items-center gap-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xs">

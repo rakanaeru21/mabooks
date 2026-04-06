@@ -68,6 +68,7 @@
 
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
                 <li><a href="{{ route('user.dashboard') }}" class="text-orange-500 font-semibold transition-colors">Beranda</a></li>
+                <li><a href="{{ route('user.orders') }}" class="hover:text-orange-500 transition-colors">Pesanan</a></li>
                 <li><a href="{{ route('user.customer-service') }}" class="hover:text-orange-500 transition-colors">Customer Service</a></li>
                 <li class="flex items-center gap-3">
                     <div class="flex items-center gap-2">
@@ -90,6 +91,7 @@
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-5 space-y-2 border-t border-gray-50 pt-3">
             <a href="/" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Beranda</a>
             <a href="{{ route('user.dashboard') }}" class="block py-2 text-sm font-semibold text-orange-500">Toko</a>
+            <a href="{{ route('user.orders') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Pesanan</a>
             <a href="/#kategori" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Kategori</a>
             <a href="/#tentang" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
             <div class="border-t border-gray-100 pt-3 mt-2">

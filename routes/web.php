@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\CustomerServiceController;
+use App\Http\Controllers\User\OrderHistoryController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Models\Book;
@@ -67,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment/{order}/success', [CheckoutController::class, 'paymentSuccess'])->name('user.payment.success');
     Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('user.customer-service');
     Route::post('/customer-service', [CustomerServiceController::class, 'store'])->name('user.customer-service.store');
+    Route::get('/pesanan', [OrderHistoryController::class, 'index'])->name('user.orders');
 });
 
 // Admin auth routes (halaman login admin terpisah)
