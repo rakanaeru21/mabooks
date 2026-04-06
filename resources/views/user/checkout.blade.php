@@ -62,17 +62,17 @@
     </nav>
 
     <!-- ==================== HEADER ==================== -->
-    <section class="bg-gradient-to-r from-orange-500 to-orange-600 pt-24 pb-12">
+    <section class="bg-white border-b border-gray-100 pt-24 pb-8">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-white"><i class="fas fa-credit-card mr-3"></i>Checkout</h1>
-                    <p class="text-orange-100 mt-2 text-sm md:text-base">Lengkapi alamat pengiriman untuk menyelesaikan pesanan.</p>
-                </div>
-                <div class="flex items-center gap-3 text-white text-sm">
-                    <a href="{{ route('user.dashboard') }}" class="text-orange-200 hover:text-white transition-colors"><i class="fas fa-home mr-1"></i>Toko</a>
-                    <i class="fas fa-chevron-right text-orange-300 text-xs"></i>
-                    <span class="font-semibold">Checkout</span>
+                    <nav class="flex items-center gap-2 text-xs text-gray-400 mb-3">
+                        <a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a>
+                        <span>/</span>
+                        <span class="text-gray-600 font-medium">Checkout</span>
+                    </nav>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Checkout</h1>
+                    <p class="text-gray-500 mt-1 text-sm">Lengkapi alamat pengiriman untuk menyelesaikan pesanan.</p>
                 </div>
             </div>
         </div>
@@ -81,11 +81,11 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
         <!-- Empty Cart Warning -->
-        <div id="empty-cart-warning" class="hidden text-center py-20 bg-white rounded-2xl border border-gray-100">
-            <i class="fas fa-shopping-cart text-5xl text-gray-200 mb-4 block"></i>
-            <p class="text-gray-400 text-lg font-medium">Keranjang kamu kosong!</p>
-            <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 mt-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-full transition-colors">
-                <i class="fas fa-arrow-left text-xs"></i> Kembali Belanja
+        <div id="empty-cart-warning" class="hidden text-center py-20 bg-white rounded-xl border border-gray-200">
+            <i class="fas fa-shopping-bag text-4xl text-gray-200 mb-3 block"></i>
+            <p class="text-gray-400 text-base font-medium">Keranjang kamu kosong</p>
+            <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 mt-4 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors">
+                Kembali Belanja
             </a>
         </div>
 
@@ -94,15 +94,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left: Cart Items -->
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                        <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
-                            <div class="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-shopping-bag text-orange-500 text-sm"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-gray-900">Pesanan Kamu</h2>
-                                <p id="item-count-text" class="text-xs text-gray-400"></p>
-                            </div>
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                            <h2 class="font-bold text-gray-900">Pesanan Kamu</h2>
+                            <span id="item-count-text" class="text-xs text-gray-400"></span>
                         </div>
                         <div id="checkout-items" class="divide-y divide-gray-50">
                             <!-- Items rendered by JS -->
@@ -113,29 +108,19 @@
                 <!-- Right: Address + Summary -->
                 <div class="space-y-6">
                     <!-- Address Form -->
-                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-map-marker-alt text-blue-500 text-sm"></i>
-                            </div>
-                            <h2 class="font-bold text-gray-900">Alamat Pengiriman</h2>
-                        </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="font-bold text-gray-900 mb-4">Alamat Pengiriman</h2>
                         <div>
-                            <label for="alamat" class="block text-sm font-semibold text-gray-700 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>
-                            <textarea id="alamat" rows="4" placeholder="Masukkan alamat lengkap pengiriman (nama jalan, RT/RW, kelurahan, kecamatan, kota, kode pos)..."
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors resize-none"></textarea>
-                            <p id="alamat-error" class="hidden text-xs text-red-500 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>Alamat wajib diisi.</p>
+                            <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Lengkap <span class="text-red-500">*</span></label>
+                            <textarea id="alamat" rows="4" placeholder="Masukkan alamat lengkap pengiriman..."
+                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-400 transition-colors resize-none"></textarea>
+                            <p id="alamat-error" class="hidden text-xs text-red-500 mt-1">Alamat wajib diisi.</p>
                         </div>
                     </div>
 
                     <!-- Order Summary -->
-                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-receipt text-green-500 text-sm"></i>
-                            </div>
-                            <h2 class="font-bold text-gray-900">Ringkasan Pesanan</h2>
-                        </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="font-bold text-gray-900 mb-4">Ringkasan Pesanan</h2>
                         <div class="space-y-3">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-500">Subtotal (<span id="summary-count">0</span> buku)</span>
@@ -147,14 +132,14 @@
                             </div>
                             <div class="border-t border-gray-100 pt-3 flex items-center justify-between">
                                 <span class="font-bold text-gray-900">Total</span>
-                                <span id="summary-total" class="text-xl font-extrabold text-orange-500">Rp 0</span>
+                                <span id="summary-total" class="text-lg font-bold text-gray-900">Rp 0</span>
                             </div>
                         </div>
-                        <button id="btn-order" onclick="placeOrder()" class="w-full mt-6 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-sm shadow-orange-500/30">
-                            <i class="fas fa-check-circle mr-2"></i>Buat Pesanan
+                        <button id="btn-order" onclick="placeOrder()" class="w-full mt-5 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-semibold py-3 rounded-lg transition-all text-sm">
+                            Buat Pesanan
                         </button>
-                        <a href="{{ route('user.dashboard') }}" class="block text-center mt-3 text-sm text-gray-400 hover:text-orange-500 transition-colors font-medium">
-                            <i class="fas fa-arrow-left mr-1"></i>Lanjut Belanja
+                        <a href="{{ route('user.dashboard') }}" class="block text-center mt-2.5 text-sm text-gray-400 hover:text-orange-500 transition-colors">
+                            Lanjut Belanja
                         </a>
                     </div>
                 </div>
@@ -164,55 +149,44 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="bg-gray-900 border-t border-gray-800 mt-10">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-14">
+    <footer class="bg-gray-900 mt-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
                 <div>
                     <a href="/" class="flex items-center gap-2 mb-4">
-                        <div class="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-book-open text-white text-sm"></i>
+                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book-open text-white text-xs"></i>
                         </div>
-                        <span class="text-xl font-extrabold text-white">Ma<span class="text-orange-500">Books</span></span>
+                        <span class="text-lg font-bold text-white">Ma<span class="text-orange-400">Books</span></span>
                     </a>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Toko buku online terpercaya dengan koleksi terlengkap dan harga terjangkau untuk seluruh Indonesia.
-                    </p>
+                    <p class="text-gray-500 text-sm leading-relaxed">Toko buku online terpercaya dengan koleksi terlengkap dan harga terjangkau.</p>
                 </div>
                 <div>
-                    <h4 class="text-white font-bold text-sm mb-4">Navigasi</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><a href="/" class="text-gray-500 hover:text-orange-500 transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('user.dashboard') }}" class="text-gray-500 hover:text-orange-500 transition-colors">Katalog Buku</a></li>
+                    <h4 class="text-white font-semibold text-sm mb-4">Navigasi</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/" class="text-gray-500 hover:text-gray-300 transition-colors">Beranda</a></li>
+                        <li><a href="{{ route('user.dashboard') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Katalog Buku</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-bold text-sm mb-4">Bantuan</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><a href="#" class="text-gray-500 hover:text-orange-500 transition-colors">Cara Pemesanan</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-orange-500 transition-colors">Metode Pembayaran</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-orange-500 transition-colors">Pengiriman</a></li>
+                    <h4 class="text-white font-semibold text-sm mb-4">Bantuan</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Cara Pemesanan</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Metode Pembayaran</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Pengiriman</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-bold text-sm mb-4">Hubungi Kami</h4>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-map-marker-alt text-orange-500 mt-0.5"></i>
-                            <span class="text-gray-500">Jl. Pendidikan No. 123, Jakarta, Indonesia</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-phone text-orange-500"></i>
-                            <span class="text-gray-500">+62 812-3456-7890</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-envelope text-orange-500"></i>
-                            <span class="text-gray-500">cs@mabooks.id</span>
-                        </li>
+                    <h4 class="text-white font-semibold text-sm mb-4">Hubungi Kami</h4>
+                    <ul class="space-y-2.5 text-sm text-gray-500">
+                        <li>Jl. Pendidikan No. 123, Jakarta</li>
+                        <li>+62 812-3456-7890</li>
+                        <li>cs@mabooks.id</li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                <p class="text-gray-600 text-sm">&copy; {{ date('Y') }} <span class="text-orange-500 font-semibold">MaBooks</span>. Semua hak dilindungi.</p>
+            <div class="border-t border-gray-800 mt-10 pt-6">
+                <p class="text-gray-600 text-xs text-center">&copy; {{ date('Y') }} MaBooks. Semua hak dilindungi.</p>
             </div>
         </div>
     </footer>
@@ -254,20 +228,20 @@
 
             cart.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = 'flex gap-4 px-6 py-4 hover:bg-gray-50 transition-colors';
+                div.className = 'flex gap-3 px-6 py-3 hover:bg-gray-50 transition-colors';
                 div.innerHTML = `
-                    <div class="w-16 h-20 shrink-0 rounded-xl overflow-hidden bg-orange-50 flex items-center justify-center">
-                        ${item.cover ? `<img src="${item.cover}" alt="" class="w-full h-full object-cover">` : `<i class="fas fa-book text-orange-200 text-2xl"></i>`}
+                    <div class="w-12 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+                        ${item.cover ? `<img src="${item.cover}" alt="" class="w-full h-full object-cover">` : `<i class="fas fa-book text-gray-200 text-lg"></i>`}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h3 class="text-sm font-bold text-gray-900 line-clamp-1">${item.judul}</h3>
+                        <h3 class="text-sm font-semibold text-gray-900 line-clamp-1">${item.judul}</h3>
                         <p class="text-xs text-gray-400 mt-0.5">${item.penulis}</p>
-                        <div class="flex items-center justify-between mt-2">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full font-medium">${item.qty}x</span>
+                        <div class="flex items-center justify-between mt-1.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded font-medium">${item.qty}x</span>
                                 <span class="text-xs text-gray-400">@ ${item.harga}</span>
                             </div>
-                            <p class="text-sm font-extrabold text-orange-500">${formatRupiah(item.hargaNum * item.qty)}</p>
+                            <p class="text-sm font-bold text-gray-900">${formatRupiah(item.hargaNum * item.qty)}</p>
                         </div>
                     </div>
                 `;
@@ -289,8 +263,8 @@
 
             // Disable button
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
-            btn.className = 'w-full mt-6 bg-gray-300 text-gray-500 font-bold py-3.5 rounded-2xl text-sm cursor-not-allowed';
+btn.innerHTML = 'Memproses...';
+                btn.className = 'w-full mt-5 bg-gray-200 text-gray-400 font-semibold py-3 rounded-lg text-sm cursor-not-allowed';
 
             const items = cart.map(item => ({
                 book_id: item.book_id,
@@ -327,8 +301,8 @@
 
                 // Re-enable button
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Buat Pesanan';
-                btn.className = 'w-full mt-6 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-sm shadow-orange-500/30';
+                btn.innerHTML = 'Buat Pesanan';
+                btn.className = 'w-full mt-5 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-semibold py-3 rounded-lg transition-all text-sm';
             });
         }
 
