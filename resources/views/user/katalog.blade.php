@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Katalog Buku - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -67,8 +67,8 @@
             </button>
 
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-                <li><a href="{{ route('user.dashboard') }}" class="text-orange-500 font-semibold transition-colors">Beranda</a></li>
-                <li><a href="{{ route('user.katalog') }}" class="hover:text-orange-500 transition-colors">Katalog</a></li>
+                <li><a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a></li>
+                <li><a href="{{ route('user.katalog') }}" class="text-orange-500 font-semibold transition-colors">Katalog</a></li>
                 <li><a href="{{ route('user.orders') }}" class="hover:text-orange-500 transition-colors">Pesanan</a></li>
                 <li><a href="{{ route('user.customer-service') }}" class="hover:text-orange-500 transition-colors">Customer Service</a></li>
                 <li class="flex items-center gap-3">
@@ -90,12 +90,10 @@
 
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-5 space-y-2 border-t border-gray-50 pt-3">
-            <a href="/" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Beranda</a>
-            <a href="{{ route('user.dashboard') }}" class="block py-2 text-sm font-semibold text-orange-500">Toko</a>
-            <a href="{{ route('user.katalog') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Katalog</a>
+            <a href="{{ route('user.dashboard') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Beranda</a>
+            <a href="{{ route('user.katalog') }}" class="block py-2 text-sm font-semibold text-orange-500">Katalog</a>
             <a href="{{ route('user.orders') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Pesanan</a>
-            <a href="/#kategori" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Kategori</a>
-            <a href="/#tentang" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Tentang</a>
+            <a href="{{ route('user.customer-service') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Customer Service</a>
             <div class="border-t border-gray-100 pt-3 mt-2">
                 <div class="flex items-center gap-2 py-2">
                     <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
@@ -113,18 +111,18 @@
         </div>
     </nav>
 
-    <!-- ==================== HERO BANNER ==================== -->
+    <!-- ==================== HERO ==================== -->
     <section class="bg-white border-b border-gray-100 pt-24 pb-8">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <nav class="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                        <a href="/" class="hover:text-orange-500 transition-colors">Beranda</a>
+                        <a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a>
                         <span>/</span>
-                        <span class="text-gray-600 font-medium">Katalog</span>
+                        <span class="text-gray-600 font-medium">Katalog Buku</span>
                     </nav>
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Selamat datang, {{ $user->nama }}</h1>
-                    <p class="text-gray-500 mt-1 text-sm">Temukan koleksi buku terbaik untuk bacaan favoritmu.</p>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Katalog Buku</h1>
+                    <p class="text-gray-500 mt-1 text-sm">Jelajahi seluruh koleksi buku berdasarkan kategori.</p>
                 </div>
             </div>
         </div>
@@ -132,101 +130,148 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
-        <!-- Search & Filter Bar -->
-        <div class="bg-white rounded-xl border border-gray-200 p-4 mb-8 flex flex-col lg:flex-row items-center gap-4">
-            <form method="GET" action="{{ route('user.dashboard') }}" class="flex-1 w-full flex items-center gap-3">
-                <div class="relative flex-1">
-                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, atau penerbit..."
-                        class="search-input w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-orange-400 transition-all">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- ===== SIDEBAR KATEGORI ===== -->
+            <aside class="lg:w-64 shrink-0">
+                <div class="bg-white rounded-xl border border-gray-200 p-5 lg:sticky lg:top-28">
+                    <h2 class="text-sm font-bold text-gray-900 mb-4">Kategori</h2>
+
+                    <div class="space-y-1">
+                        <a href="{{ route('user.katalog', request()->only('search')) }}"
+                           class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
+                           {{ !$activeCategory ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
+                            <span>Semua Buku</span>
+                            <span class="text-xs {{ !$activeCategory ? 'text-orange-400' : 'text-gray-400' }}">{{ $books->total() }}</span>
+                        </a>
+
+                        @foreach($categories as $cat)
+                        <a href="{{ route('user.katalog', array_merge(request()->only('search'), ['category' => $cat->id])) }}"
+                           class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
+                           {{ $activeCategory == $cat->id ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
+                            <span>{{ $cat->nama }}</span>
+                            <span class="text-xs {{ $activeCategory == $cat->id ? 'text-orange-400' : 'text-gray-400' }}">{{ $cat->books_count }}</span>
+                        </a>
+                        @endforeach
+                    </div>
                 </div>
-                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors">
-                    Cari
-                </button>
+            </aside>
+
+            <!-- ===== KONTEN BUKU ===== -->
+            <div class="flex-1 min-w-0">
+                <!-- Search Bar -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6 flex flex-col sm:flex-row items-center gap-3">
+                    <form method="GET" action="{{ route('user.katalog') }}" class="flex-1 w-full flex items-center gap-3">
+                        @if($activeCategory)
+                        <input type="hidden" name="category" value="{{ $activeCategory }}">
+                        @endif
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, atau penerbit..."
+                                class="search-input w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-orange-400 transition-all">
+                        </div>
+                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors">
+                            Cari
+                        </button>
+                        @if(request('search'))
+                        <a href="{{ route('user.katalog', $activeCategory ? ['category' => $activeCategory] : []) }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 transition-colors shrink-0" title="Reset">
+                            <i class="fas fa-times text-xs"></i>
+                        </a>
+                        @endif
+                    </form>
+                    <div class="flex items-center gap-2 text-sm text-gray-400 shrink-0">
+                        <span><strong class="text-gray-700">{{ $books->total() }}</strong> buku</span>
+                    </div>
+                </div>
+
                 @if(request('search'))
-                <a href="{{ route('user.dashboard') }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-400 transition-colors shrink-0" title="Reset">
-                    <i class="fas fa-times text-xs"></i>
-                </a>
+                <div class="mb-5 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-3 py-1.5 rounded-lg">
+                    Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $books->total() }} ditemukan
+                </div>
                 @endif
-            </form>
-            <div class="flex items-center gap-2 text-sm text-gray-400 shrink-0">
-                <span><strong class="text-gray-700">{{ $books->total() }}</strong> buku tersedia</span>
-            </div>
-        </div>
 
-        @if(request('search'))
-        <div class="mb-6 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-3 py-1.5 rounded-lg">
-            Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $books->total() }} ditemukan
-        </div>
-        @endif
-
-        <!-- Book Grid -->
-        @if($books->count() > 0)
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            @foreach($books as $book)
-            <div class="bg-white rounded-xl overflow-hidden card-hover group border border-gray-200 cursor-pointer"
-                 onclick="showBookDetail({
-                    book_id: {{ $book->id }},
-                    judul: '{{ addslashes($book->judul) }}',
-                    penulis: '{{ addslashes($book->penulis) }}',
-                    penerbit: '{{ addslashes($book->penerbit ?? '-') }}',
-                    tahun: '{{ $book->tahun_terbit ?? '-' }}',
-                    isbn: '{{ $book->isbn ?? '-' }}',
-                    harga: 'Rp {{ number_format($book->harga, 0, ',', '.') }}',
-                    stok: {{ $book->stok }},
-                    deskripsi: '{{ addslashes($book->deskripsi ?? 'Tidak ada deskripsi.') }}',
-                    cover: '{{ $book->cover ? asset('storage/' . $book->cover) : '' }}'
-                 })">
-                <div class="bg-gray-50 flex items-center justify-center h-52 relative overflow-hidden">
-                    @if($book->cover)
-                    <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300">
-                    @else
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-book text-gray-200 text-5xl"></i>
-                    </div>
-                    @endif
-                    @if($book->stok < 1)
-                    <span class="absolute top-3 right-3 bg-red-500/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded">Habis</span>
-                    @endif
+                @php
+                    $activeCategoryName = $activeCategory ? $categories->firstWhere('id', $activeCategory)?->nama : null;
+                @endphp
+                @if($activeCategoryName)
+                <div class="mb-5 flex items-center gap-2">
+                    <span class="text-sm text-gray-500">Kategori:</span>
+                    <span class="text-sm font-semibold text-gray-900">{{ $activeCategoryName }}</span>
+                    <a href="{{ route('user.katalog', request()->only('search')) }}" class="text-xs text-gray-400 hover:text-red-500 ml-1 transition-colors">&times; Hapus filter</a>
                 </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-gray-900 mb-0.5 line-clamp-1 text-sm">{{ $book->judul }}</h3>
-                    <p class="text-xs text-gray-400 mb-1">{{ $book->penulis }}</p>
-                    @if($book->penerbit)
-                    <p class="text-[11px] text-gray-400 mb-2">{{ $book->penerbit }}</p>
-                    @endif
-                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                        <p class="text-base font-bold text-gray-900">Rp {{ number_format($book->harga, 0, ',', '.') }}</p>
-                        <span class="text-[11px] font-medium {{ $book->stok > 0 ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $book->stok > 0 ? 'Stok ' . $book->stok : 'Habis' }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
+                @endif
 
-        <!-- Pagination -->
-        <div class="mt-10 flex justify-center">
-            {{ $books->withQueryString()->links() }}
-        </div>
-        @else
-        <div class="text-center py-20 bg-white rounded-xl border border-gray-200">
-            <i class="fas fa-search text-4xl text-gray-200 mb-4 block"></i>
-            <p class="text-gray-400 text-base font-medium">
-                @if(request('search'))
-                    Tidak ada buku yang cocok dengan pencarian "{{ request('search') }}".
+                <!-- Book Grid -->
+                @if($books->count() > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    @foreach($books as $book)
+                    <div class="bg-white rounded-xl overflow-hidden card-hover group border border-gray-200 cursor-pointer"
+                         onclick="showBookDetail({
+                            book_id: {{ $book->id }},
+                            judul: '{{ addslashes($book->judul) }}',
+                            penulis: '{{ addslashes($book->penulis) }}',
+                            penerbit: '{{ addslashes($book->penerbit ?? '-') }}',
+                            tahun: '{{ $book->tahun_terbit ?? '-' }}',
+                            isbn: '{{ $book->isbn ?? '-' }}',
+                            harga: 'Rp {{ number_format($book->harga, 0, ',', '.') }}',
+                            stok: {{ $book->stok }},
+                            deskripsi: '{{ addslashes($book->deskripsi ?? 'Tidak ada deskripsi.') }}',
+                            cover: '{{ $book->cover ? asset('storage/' . $book->cover) : '' }}'
+                         })">
+                        <div class="bg-gray-50 flex items-center justify-center h-52 relative overflow-hidden">
+                            @if($book->cover)
+                            <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300">
+                            @else
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-book text-gray-200 text-5xl"></i>
+                            </div>
+                            @endif
+                            @if($book->stok < 1)
+                            <span class="absolute top-3 right-3 bg-red-500/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded">Habis</span>
+                            @endif
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-gray-900 mb-0.5 line-clamp-1 text-sm">{{ $book->judul }}</h3>
+                            <p class="text-xs text-gray-400 mb-1">{{ $book->penulis }}</p>
+                            @if($book->category)
+                            <p class="text-[11px] text-orange-500 font-medium mb-2">{{ $book->category->nama }}</p>
+                            @endif
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                                <p class="text-base font-bold text-gray-900">Rp {{ number_format($book->harga, 0, ',', '.') }}</p>
+                                <span class="text-[11px] font-medium {{ $book->stok > 0 ? 'text-green-600' : 'text-red-500' }}">
+                                    {{ $book->stok > 0 ? 'Stok ' . $book->stok : 'Habis' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-8 flex justify-center">
+                    {{ $books->withQueryString()->links() }}
+                </div>
                 @else
-                    Belum ada buku yang tersedia.
+                <div class="text-center py-20 bg-white rounded-xl border border-gray-200">
+                    <i class="fas fa-search text-4xl text-gray-200 mb-3 block"></i>
+                    <p class="text-gray-400 text-base font-medium">
+                        @if(request('search'))
+                            Tidak ada buku yang cocok dengan pencarian "{{ request('search') }}".
+                        @elseif($activeCategoryName)
+                            Belum ada buku dalam kategori "{{ $activeCategoryName }}".
+                        @else
+                            Belum ada buku yang tersedia.
+                        @endif
+                    </p>
+                    @if(request('search') || $activeCategory)
+                    <a href="{{ route('user.katalog') }}" class="inline-block mt-3 text-orange-500 text-sm font-medium hover:text-orange-600 transition-colors">
+                        Tampilkan semua buku
+                    </a>
+                    @endif
+                </div>
                 @endif
-            </p>
-            @if(request('search'))
-            <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 mt-4 text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors">
-                <i class="fas fa-arrow-left text-xs"></i> Tampilkan semua buku
-            </a>
-            @endif
+            </div>
         </div>
-        @endif
     </main>
 
     <!-- ==================== FOOTER ==================== -->
@@ -240,44 +285,33 @@
                         </div>
                         <span class="text-lg font-bold text-white">Ma<span class="text-orange-400">Books</span></span>
                     </a>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-5">
-                        Toko buku online terpercaya dengan koleksi terlengkap dan harga terjangkau.
-                    </p>
-                    <div class="flex gap-2">
-                        <a href="#" class="w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-500 hover:text-white transition-colors text-xs"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-500 hover:text-white transition-colors text-xs"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-500 hover:text-white transition-colors text-xs"><i class="fab fa-facebook-f"></i></a>
-                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">Toko buku online terpercaya dengan koleksi terlengkap dan harga terjangkau.</p>
                 </div>
                 <div>
                     <h4 class="text-white font-semibold text-sm mb-4">Navigasi</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="/" class="text-gray-500 hover:text-gray-300 transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('user.dashboard') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Katalog Buku</a></li>
-                        <li><a href="/#kategori" class="text-gray-500 hover:text-gray-300 transition-colors">Kategori</a></li>
-                        <li><a href="/#tentang" class="text-gray-500 hover:text-gray-300 transition-colors">Tentang Kami</a></li>
+                        <li><a href="{{ route('user.dashboard') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Beranda</a></li>
+                        <li><a href="{{ route('user.katalog') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Katalog Buku</a></li>
+                        <li><a href="{{ route('user.orders') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Pesanan</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-semibold text-sm mb-4">Bantuan</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Cara Pemesanan</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Metode Pembayaran</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">Pengiriman</a></li>
+                        <li><a href="{{ route('user.customer-service') }}" class="text-gray-500 hover:text-gray-300 transition-colors">Customer Service</a></li>
                         <li><a href="#" class="text-gray-500 hover:text-gray-300 transition-colors">FAQ</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-semibold text-sm mb-4">Hubungi Kami</h4>
                     <ul class="space-y-2.5 text-sm text-gray-500">
-                        <li>Jl. Pendidikan No. 123, Jakarta</li>
-                        <li>+62 812-3456-7890</li>
                         <li>cs@mabooks.id</li>
+                        <li>+62 812-3456-7890</li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-                <p class="text-gray-600 text-xs">&copy; {{ date('Y') }} MaBooks. Semua hak dilindungi.</p>
+            <div class="border-t border-gray-800 mt-10 pt-6">
+                <p class="text-gray-600 text-xs text-center">&copy; {{ date('Y') }} MaBooks. Semua hak dilindungi.</p>
             </div>
         </div>
     </footer>
@@ -291,7 +325,6 @@
     <!-- ==================== CART SIDEBAR ==================== -->
     <div id="cart-overlay" class="hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm" onclick="toggleCart()"></div>
     <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full max-w-sm z-[56] bg-white shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-in-out">
-        <!-- Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div class="flex items-center gap-2">
                 <h2 class="text-base font-bold text-gray-900">Keranjang</h2>
@@ -301,18 +334,13 @@
                 <i class="fas fa-times text-xs"></i>
             </button>
         </div>
-
-        <!-- Cart Items -->
         <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-            <!-- Empty state -->
             <div id="cart-empty" class="flex flex-col items-center justify-center h-full py-16 text-center">
                 <i class="fas fa-shopping-bag text-3xl text-gray-200 mb-3"></i>
                 <p class="text-gray-400 text-sm font-medium">Keranjang masih kosong</p>
                 <p class="text-gray-300 text-xs mt-1">Tambahkan buku untuk memulai.</p>
             </div>
         </div>
-
-        <!-- Footer -->
         <div id="cart-footer" class="hidden px-6 py-4 border-t border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <span class="text-sm text-gray-500">Total</span>
@@ -459,7 +487,6 @@
 
         // ==================== CART ====================
         let cart = JSON.parse(localStorage.getItem('mabooks_cart') || '[]');
-        // Remove old cart items without book_id
         cart = cart.filter(i => i.book_id);
         localStorage.setItem('mabooks_cart', JSON.stringify(cart));
         let cartOpen = false;
@@ -497,47 +524,24 @@
             toggleCart();
         }
 
-        function removeFromCart(idx) {
-            cart.splice(idx, 1);
-            saveCart();
-            renderCart();
-        }
-
+        function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); renderCart(); }
         function changeQty(idx, delta) {
             cart[idx].qty += delta;
             if (cart[idx].qty <= 0) { removeFromCart(idx); return; }
             if (cart[idx].qty > cart[idx].stok) cart[idx].qty = cart[idx].stok;
-            saveCart();
-            renderCart();
+            saveCart(); renderCart();
         }
-
-        function clearCart() {
-            cart = [];
-            saveCart();
-            renderCart();
-        }
-
-        function saveCart() {
-            localStorage.setItem('mabooks_cart', JSON.stringify(cart));
-        }
-
-        function formatRupiah(n) {
-            return 'Rp ' + n.toLocaleString('id-ID');
-        }
+        function clearCart() { cart = []; saveCart(); renderCart(); }
+        function saveCart() { localStorage.setItem('mabooks_cart', JSON.stringify(cart)); }
+        function formatRupiah(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
 
         function renderCart() {
             const count = cart.reduce((s, i) => s + i.qty, 0);
             const total = cart.reduce((s, i) => s + i.hargaNum * i.qty, 0);
-
-            // Badge on floating btn
             const countEl = document.getElementById('cart-count');
             countEl.textContent = count;
             countEl.classList.toggle('hidden', count === 0);
-
-            // Badge in sidebar header
             document.getElementById('cart-badge').textContent = count + ' item';
-
-            // Total
             document.getElementById('cart-total').textContent = formatRupiah(total);
 
             const emptyEl = document.getElementById('cart-empty');
@@ -547,15 +551,11 @@
             if (cart.length === 0) {
                 emptyEl.classList.remove('hidden');
                 footerEl.classList.add('hidden');
-                // remove item cards
                 itemsEl.querySelectorAll('.cart-item-card').forEach(el => el.remove());
                 return;
             }
-
             emptyEl.classList.add('hidden');
             footerEl.classList.remove('hidden');
-
-            // Re-render item cards
             itemsEl.querySelectorAll('.cart-item-card').forEach(el => el.remove());
             cart.forEach((item, idx) => {
                 const div = document.createElement('div');
@@ -581,10 +581,7 @@
                 itemsEl.appendChild(div);
             });
         }
-
-        // Init cart
         renderCart();
     </script>
-
 </body>
 </html>

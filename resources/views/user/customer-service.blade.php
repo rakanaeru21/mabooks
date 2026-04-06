@@ -52,6 +52,7 @@
 
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
                 <li><a href="{{ route('user.dashboard') }}" class="hover:text-orange-500 transition-colors">Beranda</a></li>
+                <li><a href="{{ route('user.katalog') }}" class="hover:text-orange-500 transition-colors">Katalog</a></li>
                 <li><a href="{{ route('user.orders') }}" class="hover:text-orange-500 transition-colors">Pesanan</a></li>
                 <li><a href="{{ route('user.customer-service') }}" class="text-orange-500 font-semibold transition-colors">Customer Service</a></li>
                 <li class="flex items-center gap-3">
@@ -74,6 +75,7 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-5 space-y-2 border-t border-gray-50 pt-3">
             <a href="{{ route('user.dashboard') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Beranda</a>
+            <a href="{{ route('user.katalog') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Katalog</a>
             <a href="{{ route('user.orders') }}" class="block py-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">Pesanan</a>
             <a href="{{ route('user.customer-service') }}" class="block py-2 text-sm font-semibold text-orange-500">Customer Service</a>
             <div class="border-t border-gray-100 pt-3 mt-2">

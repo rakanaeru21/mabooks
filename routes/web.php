@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\CustomerServiceController;
+use App\Http\Controllers\User\KatalogController;
 use App\Http\Controllers\User\OrderHistoryController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\Admin\MessageController;
@@ -61,6 +62,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // User dashboard
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/katalog', [KatalogController::class, 'index'])->name('user.katalog');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('user.checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('user.checkout.store');
     Route::get('/payment/{order}', [CheckoutController::class, 'payment'])->name('user.payment');
