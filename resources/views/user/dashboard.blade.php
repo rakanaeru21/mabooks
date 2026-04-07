@@ -150,66 +150,57 @@
                 @endif
             </form>
             <div class="flex items-center gap-2 text-sm text-gray-400 shrink-0">
-                <span><strong class="text-gray-700">{{ $books->total() }}</strong> buku tersedia</span>
+                <span><strong class="text-gray-700">{{ $totalBooks }}</strong> buku tersedia</span>
             </div>
         </div>
 
         @if(request('search'))
         <div class="mb-6 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-sm font-medium px-3 py-1.5 rounded-lg">
-            Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $books->total() }} ditemukan
+            Hasil untuk "<strong>{{ request('search') }}</strong>" &mdash; {{ $totalBooks }} ditemukan
         </div>
         @endif
 
-        <!-- Book Grid -->
-        @if($books->count() > 0)
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            @foreach($books as $book)
-            <div class="bg-white rounded-xl overflow-hidden card-hover group border border-gray-200 cursor-pointer"
-                 onclick="showBookDetail({
-                    book_id: {{ $book->id }},
-                    judul: '{{ addslashes($book->judul) }}',
-                    penulis: '{{ addslashes($book->penulis) }}',
-                    penerbit: '{{ addslashes($book->penerbit ?? '-') }}',
-                    tahun: '{{ $book->tahun_terbit ?? '-' }}',
-                    isbn: '{{ $book->isbn ?? '-' }}',
-                    harga: 'Rp {{ number_format($book->harga, 0, ',', '.') }}',
-                    stok: {{ $book->stok }},
-                    deskripsi: '{{ addslashes($book->deskripsi ?? 'Tidak ada deskripsi.') }}',
-                    cover: '{{ $book->cover ? asset('storage/' . $book->cover) : '' }}'
-                 })">
-                <div class="bg-gray-50 flex items-center justify-center h-52 relative overflow-hidden">
-                    @if($book->cover)
-                    <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}" class="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300">
-                    @else
-                    <div class="flex flex-col items-center">
-                        <i class="fas fa-book text-gray-200 text-5xl"></i>
-                    </div>
-                    @endif
-                    @if($book->stok < 1)
-                    <span class="absolute top-3 right-3 bg-red-500/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded">Habis</span>
-                    @endif
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-gray-900 mb-0.5 line-clamp-1 text-sm">{{ $book->judul }}</h3>
-                    <p class="text-xs text-gray-400 mb-1">{{ $book->penulis }}</p>
-                    @if($book->penerbit)
-                    <p class="text-[11px] text-gray-400 mb-2">{{ $book->penerbit }}</p>
-                    @endif
-                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                        <p class="text-base font-bold text-gray-900">Rp {{ number_format($book->harga, 0, ',', '.') }}</p>
-                        <span class="text-[11px] font-medium {{ $book->stok > 0 ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $book->stok > 0 ? 'Stok ' . $book->stok : 'Habis' }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
+        <!-- Books by Category -->
+        @if($categories->isNotEmpty() || $uncategorized->isNotEmpty())
 
-        <!-- Pagination -->
-        <div class="mt-10 flex justify-center">
-            {{ $books->withQueryString()->links() }}
-        </div>
+            @foreach($categories as $category)
+            <section class="mb-10">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-folder text-orange-500 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900">{{ $category->nama }}</h2>
+                        <p class="text-xs text-gray-400">{{ $category->books->count() }} buku</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach($category->books as $book)
+                    @include('user._book-card', ['book' => $book])
+                    @endforeach
+                </div>
+            </section>
+            @endforeach
+
+            @if($uncategorized->isNotEmpty())
+            <section class="mb-10">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-book text-gray-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900">Lainnya</h2>
+                        <p class="text-xs text-gray-400">{{ $uncategorized->count() }} buku</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach($uncategorized as $book)
+                    @include('user._book-card', ['book' => $book])
+                    @endforeach
+                </div>
+            </section>
+            @endif
+
         @else
         <div class="text-center py-20 bg-white rounded-xl border border-gray-200">
             <i class="fas fa-search text-4xl text-gray-200 mb-4 block"></i>
