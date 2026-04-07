@@ -72,6 +72,23 @@
             70% { box-shadow: 0 0 0 12px rgba(249, 115, 22, 0); }
             100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
         }
+        .marquee-wrapper {
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee-scroll 30s linear infinite;
+        }
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+        @keyframes marquee-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 font-sans antialiased">
@@ -225,50 +242,47 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
-                <!-- Kategori Items -->
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-landmark"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Novel</h3>
-                </a>
+            @php
+                $iconMap = [
+                    'Novel' => 'fa-landmark',
+                    'Sains' => 'fa-flask',
+                    'Bisnis' => 'fa-briefcase',
+                    'Edukasi' => 'fa-graduation-cap',
+                    'Anak-Anak' => 'fa-child',
+                    'Religi' => 'fa-mosque',
+                    'Teknologi' => 'fa-laptop-code',
+                    'Sejarah' => 'fa-scroll',
+                    'Biografi' => 'fa-user',
+                    'Fiksi' => 'fa-book-open',
+                    'Non-Fiksi' => 'fa-book',
+                    'default' => 'fa-bookmark'
+                ];
+            @endphp
 
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Sains</h3>
-                </a>
-
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Bisnis</h3>
-                </a>
-
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Edukasi</h3>
-                </a>
-
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-child"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Anak-Anak</h3>
-                </a>
-
-                <a href="#" class="group bg-orange-50 hover:bg-orange-500 rounded-2xl p-6 text-center transition-all duration-300 card-hover">
-                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-white/20 text-orange-500 group-hover:text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl transition-colors duration-300">
-                        <i class="fas fa-mosque"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-white transition-colors duration-300">Religi</h3>
-                </a>
+            @if ($categories->count() > 0)
+            <div class="marquee-wrapper">
+                <div class="marquee-track gap-5">
+                    @for ($i = 0; $i < 2; $i++)
+                    @foreach ($categories as $category)
+                    <a href="#buku" class="group flex items-center gap-4 bg-white border border-gray-100 hover:border-orange-300 hover:shadow-md hover:shadow-orange-500/10 rounded-2xl px-6 py-5 transition-all duration-300 shrink-0 w-72">
+                        <div class="w-12 h-12 bg-orange-50 group-hover:bg-orange-100 text-orange-500 rounded-xl flex items-center justify-center text-xl transition-colors duration-300 shrink-0">
+                            <i class="fas {{ $iconMap[$category->nama] ?? $iconMap['default'] }}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-[15px] font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300 truncate">{{ $category->nama }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5 truncate">{{ $category->books_count ?? $category->books()->count() }} buku tersedia</p>
+                        </div>
+                    </a>
+                    @endforeach
+                    @endfor
+                </div>
             </div>
+            @else
+            <div class="text-center py-10">
+                <i class="fas fa-folder-open text-5xl text-gray-200 mb-4"></i>
+                <p class="text-gray-400 text-lg font-medium">Belum ada kategori yang tersedia.</p>
+            </div>
+            @endif
         </div>
     </section>
 
@@ -282,7 +296,6 @@
                     <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">Buku <span class="text-orange-500">Terlaris</span></h2>
                 </div>
 
-                <!-- Search -->
                 <form method="GET" action="/#buku" class="w-full lg:w-auto">
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1 lg:w-80">

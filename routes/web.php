@@ -14,6 +14,7 @@ use App\Http\Controllers\User\OrderHistoryController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +31,8 @@ Route::get('/', function (Request $request) {
     }
 
     $books = $query->latest()->take(8)->get();
-    return view('welcome', compact('books'));
+    $categories = Category::all();
+    return view('welcome', compact('books', 'categories'));
 });
 
 Route::get('/toko', function (Request $request) {
