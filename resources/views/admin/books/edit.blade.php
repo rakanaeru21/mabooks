@@ -194,10 +194,22 @@
                                         @error('harga') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
-                                        <label for="stok" class="block text-sm font-semibold text-gray-700 mb-1.5">Stok <span class="text-red-500">*</span></label>
-                                        <input type="number" name="stok" id="stok" value="{{ old('stok', $book->stok) }}" min="0" required
-                                            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors">
-                                        @error('stok') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Stok <span class="text-red-500">*</span></label>
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-xs text-gray-500">Stok saat ini:</span>
+                                            <span class="text-sm font-bold text-gray-900">{{ $book->stok }}</span>
+                                        </div>
+                                        <input type="hidden" name="stok_sebelumnya" value="{{ $book->stok }}">
+                                        <label for="stok_tambahan" class="block text-xs text-gray-500 mb-1">Jumlah restock (tambahan)</label>
+                                        <input type="number" name="stok_tambahan" id="stok_tambahan" value="{{ old('stok_tambahan', 0) }}" min="0"
+                                            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+                                            oninput="document.getElementById('stok_total').textContent = ({{ $book->stok }} + parseInt(this.value || 0))">
+                                        <div class="mt-2 flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
+                                            <i class="fas fa-boxes-stacked text-orange-500 text-xs"></i>
+                                            <span class="text-xs text-gray-600">Total stok setelah restock:</span>
+                                            <span id="stok_total" class="text-sm font-bold text-orange-600">{{ $book->stok + old('stok_tambahan', 0) }}</span>
+                                        </div>
+                                        @error('stok_tambahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                                 <div>
