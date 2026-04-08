@@ -61,8 +61,8 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// User dashboard
-Route::middleware('auth')->group(function () {
+// User dashboard (dilindungi middleware user)
+Route::middleware('user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
     Route::get('/katalog', [KatalogController::class, 'index'])->name('user.katalog');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('user.checkout');
