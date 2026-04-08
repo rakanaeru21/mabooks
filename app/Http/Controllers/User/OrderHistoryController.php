@@ -41,4 +41,21 @@ class OrderHistoryController extends Controller
             'backLabel' => 'Kembali ke Pesanan',
         ]);
     }
+
+    public function confirmReceived(Order $order)
+    {
+        $user = Auth::user();
+
+        if ($order->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($order->status !== 'dikirim') {
+            return back()->with('error', 'Pesanan tidak dapat dikonfirmasi.');
+        }
+
+        $order->update(['status' => 'selesai']);
+
+        return back()->with('success', 'Pesanan telah dikonfirmasi diterima. Terima kasih!');
+    }
 }

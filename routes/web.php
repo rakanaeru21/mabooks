@@ -36,21 +36,21 @@ Route::get('/', function (Request $request) {
     return view('welcome', compact('books', 'categories'));
 });
 
-Route::get('/toko', function (Request $request) {
-    $query = Book::query();
+// Route::get('/toko', function (Request $request) {
+//     $query = Book::query();
 
-    if ($request->filled('search')) {
-        $search = $request->input('search');
-        $query->where(function ($q) use ($search) {
-            $q->where('judul', 'like', "%{$search}%")
-              ->orWhere('penulis', 'like', "%{$search}%")
-              ->orWhere('penerbit', 'like', "%{$search}%");
-        });
-    }
+//     if ($request->filled('search')) {
+//         $search = $request->input('search');
+//         $query->where(function ($q) use ($search) {
+//             $q->where('judul', 'like', "%{$search}%")
+//               ->orWhere('penulis', 'like', "%{$search}%")
+//               ->orWhere('penerbit', 'like', "%{$search}%");
+//         });
+//     }
 
-    $books = $query->latest()->paginate(12);
-    return view('toko', compact('books'));
-})->name('toko');
+//     $books = $query->latest()->paginate(12);
+//     return view('toko', compact('books'));
+// })->name('toko');
 
 // User auth routes
 Route::middleware('guest')->group(function () {
@@ -74,6 +74,7 @@ Route::middleware('user')->group(function () {
     Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('user.customer-service');
     Route::post('/customer-service', [CustomerServiceController::class, 'store'])->name('user.customer-service.store');
     Route::get('/pesanan', [OrderHistoryController::class, 'index'])->name('user.orders');
+    Route::patch('/pesanan/{order}/konfirmasi', [OrderHistoryController::class, 'confirmReceived'])->name('user.orders.confirmReceived');
     Route::get('/invoice/{order}', [OrderHistoryController::class, 'invoice'])->name('user.invoice');
 });
 

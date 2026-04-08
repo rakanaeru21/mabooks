@@ -66,87 +66,209 @@
     </nav>
 
     <!-- ==================== MAIN ==================== -->
-    <main class="max-w-3xl mx-auto px-6 lg:px-8 pt-28 pb-16">
-        <!-- Success Card -->
-        <div class="bg-white rounded-xl border border-gray-200 p-8 md:p-12 text-center mb-8">
-            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-5 animate-check">
-                <i class="fas fa-check text-2xl text-green-500"></i>
-            </div>
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Pembayaran Terkirim</h1>
-            <p class="text-gray-500 text-sm mb-1">Bukti pembayaran kamu telah berhasil dikirim.</p>
-            <p class="text-xs text-gray-400">Pesanan akan segera diproses oleh admin.</p>
+    <main class="max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
 
-            <div class="mt-6 inline-flex items-center gap-1.5 bg-gray-50 text-gray-700 font-bold text-base px-5 py-2.5 rounded-lg">
-                Pesanan #{{ $order->id }}
+        <!-- Success Card — Landscape -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center shrink-0 animate-check">
+                <i class="fas fa-check-circle text-3xl text-green-500"></i>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">Pembayaran Terkirim!</h1>
+                <p class="text-gray-500 text-sm">Bukti pembayaran kamu telah berhasil dikirim. Pesanan akan segera diproses oleh admin.</p>
+            </div>
+            <div class="flex flex-col items-center gap-2 shrink-0">
+                <div class="inline-flex items-center gap-2 bg-orange-50 text-orange-600 font-bold text-sm px-5 py-2.5 rounded-xl border border-orange-100">
+                    <i class="fas fa-receipt"></i> Pesanan #{{ $order->id }}
+                </div>
+                <span class="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full capitalize
+                    @if($order->status === 'pending') bg-yellow-50 text-yellow-600 border border-yellow-200
+                    @elseif($order->status === 'diproses') bg-blue-50 text-blue-600 border border-blue-200
+                    @elseif($order->status === 'dikirim') bg-purple-50 text-purple-600 border border-purple-200
+                    @elseif($order->status === 'selesai') bg-green-50 text-green-600 border border-green-200
+                    @elseif($order->status === 'dibatalkan') bg-red-50 text-red-500 border border-red-200
+                    @else bg-gray-50 text-gray-500 border border-gray-200
+                    @endif">
+                    @if($order->status === 'pending')<i class="fas fa-clock"></i>
+                    @elseif($order->status === 'diproses')<i class="fas fa-spinner"></i>
+                    @elseif($order->status === 'dikirim')<i class="fas fa-truck"></i>
+                    @elseif($order->status === 'selesai')<i class="fas fa-check-circle"></i>
+                    @elseif($order->status === 'dibatalkan')<i class="fas fa-times-circle"></i>
+                    @endif
+                    {{ $order->status }}
+                </span>
             </div>
         </div>
 
-        <!-- Order Details -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Items -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
-                <h2 class="font-bold text-gray-900 mb-4">Buku Dipesan</h2>
-                <div class="space-y-3">
-                    @foreach ($order->items as $item)
-                    <div class="flex gap-3">
-                        <div class="w-10 h-14 shrink-0 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
-                            @if ($item->book && $item->book->cover)
-                            <img src="{{ asset('storage/' . $item->book->cover) }}" alt="" class="w-full h-full object-cover">
-                            @else
-                            <i class="fas fa-book text-gray-200 text-xs"></i>
-                            @endif
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 line-clamp-1">{{ $item->book->judul ?? 'Buku dihapus' }}</p>
-                            <p class="text-xs text-gray-400">{{ $item->jumlah }}x @ Rp {{ number_format($item->harga, 0, ',', '.') }}</p>
-                        </div>
-                        <p class="text-sm font-bold text-gray-800 shrink-0">Rp {{ number_format($item->harga * $item->jumlah, 0, ',', '.') }}</p>
+        @if (session('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-3 rounded-2xl text-sm flex items-center gap-2">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+        </div>
+        @endif
+
+        @if (session('error'))
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-3 rounded-2xl text-sm flex items-center gap-2">
+            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+        </div>
+        @endif
+
+        <!-- Status Banner -->
+        <div class="bg-green-50 rounded-2xl border border-green-100 px-6 py-4 mb-8 flex items-center gap-3">
+            <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
+                <i class="fas fa-clock text-green-600 text-sm"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-green-700">Menunggu Konfirmasi Admin</p>
+                <p class="text-xs text-green-600 mt-0.5">Pesanan kamu sedang diproses. Kamu akan mendapat notifikasi saat pesanan dikirim.</p>
+            </div>
+        </div>
+
+        <!-- Top Row: 3 info cards side by side -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Alamat Pengiriman -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-blue-500 text-sm"></i>
                     </div>
-                    @endforeach
+                    <h2 class="font-bold text-gray-900">Alamat Pengiriman</h2>
                 </div>
-                <div class="border-t border-gray-100 mt-4 pt-4 flex items-center justify-between">
-                    <span class="font-bold text-gray-900">Total</span>
-                    <span class="text-lg font-bold text-gray-900">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
+                <p class="text-sm text-gray-600 leading-relaxed">{{ $order->alamat }}</p>
+            </div>
+
+            <!-- Detail Pesanan -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar text-purple-500 text-sm"></i>
+                    </div>
+                    <h2 class="font-bold text-gray-900">Detail Pesanan</h2>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Tanggal Pesan</span>
+                        <span class="font-semibold text-gray-900">{{ $order->created_at->format('d M Y, H:i') }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Metode</span>
+                        <span class="font-semibold text-gray-900">Transfer Bank</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Total Item</span>
+                        <span class="font-semibold text-gray-900">{{ $order->items->sum('jumlah') }} buku</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Info -->
-            <div class="space-y-6">
-                <!-- Alamat -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <h2 class="font-bold text-gray-900 mb-3">Alamat Pengiriman</h2>
-                    <p class="text-sm text-gray-600 leading-relaxed">{{ $order->alamat }}</p>
+            <!-- Total Pembayaran -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-wallet text-orange-500 text-sm"></i>
+                    </div>
+                    <h2 class="font-bold text-gray-900">Total Pembayaran</h2>
                 </div>
+                <p class="text-3xl font-extrabold text-orange-500">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</p>
+                <p class="text-xs text-gray-400 mt-2">Sudah termasuk seluruh item pesanan</p>
+            </div>
+        </div>
 
-                <!-- Status -->
-                <div class="bg-green-50 rounded-xl border border-green-100 p-4">
-                    <p class="text-sm font-medium text-green-700">Bukti Pembayaran Terkirim</p>
-                    <p class="text-xs text-green-500 mt-0.5">Pesanan kamu sedang diproses. Kamu akan mendapat notifikasi saat pesanan dikirim.</p>
+        <!-- Bottom Row: Items + Bukti side by side -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+            <!-- Item Pesanan -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
+                    <div class="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-orange-500 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900">Item Pesanan</h2>
+                        <p class="text-xs text-gray-400">{{ $order->items->sum('jumlah') }} buku dipesan</p>
+                    </div>
                 </div>
+                <div class="divide-y divide-gray-50">
+                    @foreach ($order->items as $item)
+                    <div class="flex gap-4 px-6 py-4 items-center">
+                        <div class="w-12 h-16 shrink-0 rounded-xl overflow-hidden bg-orange-50 flex items-center justify-center">
+                            @if ($item->book && $item->book->cover)
+                            <img src="{{ asset('storage/' . $item->book->cover) }}" alt="" class="w-full h-full object-cover">
+                            @else
+                            <i class="fas fa-book text-orange-200 text-lg"></i>
+                            @endif
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900 line-clamp-1">{{ $item->book->judul ?? 'Buku dihapus' }}</p>
+                            @if ($item->book)
+                            <p class="text-xs text-gray-400 mt-0.5">{{ $item->book->penulis }}</p>
+                            @endif
+                            <div class="flex items-center gap-3 mt-1.5">
+                                <span class="text-xs text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full font-medium">{{ $item->jumlah }}x</span>
+                                <span class="text-xs text-gray-400">@ Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm font-extrabold text-orange-500 shrink-0">Rp {{ number_format($item->harga * $item->jumlah, 0, ',', '.') }}</p>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+                    <span class="font-bold text-gray-900">Total</span>
+                    <span class="text-lg font-extrabold text-orange-500">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
+                </div>
+            </div>
 
-                <!-- Bukti -->
+            <!-- Bukti Pembayaran -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
+                    <div class="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-image text-emerald-500 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900">Bukti Pembayaran</h2>
+                        <p class="text-xs text-gray-400">Bukti transfer yang telah kamu kirim</p>
+                    </div>
+                </div>
                 @if ($order->bukti_pembayaran)
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <h2 class="font-bold text-gray-900 mb-3">Bukti Pembayaran</h2>
-                    <img src="{{ asset('storage/' . $order->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="w-full rounded-lg border border-gray-100">
+                <div class="p-6 flex justify-center bg-gray-50">
+                    <img src="{{ asset('storage/' . $order->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="max-h-[400px] w-auto rounded-xl border border-gray-200 shadow-sm">
+                </div>
+                @else
+                <div class="p-6 flex flex-col items-center justify-center bg-gray-50 min-h-[200px]">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-image text-2xl text-gray-300"></i>
+                    </div>
+                    <p class="text-sm text-gray-400 font-medium">Belum ada bukti pembayaran</p>
                 </div>
                 @endif
             </div>
         </div>
 
         <!-- Actions -->
-        <div class="text-center">
-            <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition-colors">
-                Kembali ke Toko
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            @if ($order->status === 'dikirim')
+            <form method="POST" action="{{ route('user.orders.confirmReceived', $order) }}" onsubmit="return confirm('Apakah kamu yakin produk sudah diterima?')">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm">
+                    <i class="fas fa-box-open"></i> Konfirmasi Diterima
+                </button>
+            </form>
+            @endif
+            <a href="{{ route('user.orders') }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm">
+                <i class="fas fa-list-ul text-gray-400"></i> Lihat Pesanan Saya
+            </a>
+            <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm">
+                <i class="fas fa-store"></i> Kembali ke Toko
             </a>
             @if ($order->status === 'selesai')
-            <a href="{{ route('user.invoice', $order) }}" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition-colors ml-2">
-                Lihat Invoice
+            <a href="{{ route('user.invoice', $order) }}" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm">
+                <i class="fas fa-file-invoice"></i> Lihat Invoice
             </a>
-            @else
-            <p class="text-xs text-gray-400 mt-3">Invoice tersedia setelah pesanan selesai.</p>
             @endif
         </div>
+        @if ($order->status !== 'selesai')
+        <p class="text-xs text-gray-400 text-center mt-3"><i class="fas fa-info-circle mr-1"></i>Invoice tersedia setelah pesanan selesai.</p>
+        @endif
     </main>
 
     <!-- ==================== FOOTER ==================== -->
