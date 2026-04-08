@@ -63,6 +63,9 @@
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
+                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                    <i class="fas fa-file-lines w-5 text-center"></i> Laporan
+                </a>
                 <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-comments w-5 text-center"></i> Pesan Masuk
                 </a>
@@ -223,6 +226,9 @@
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
+                </a>
+                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                    <i class="fas fa-file-lines w-5 text-center"></i> Laporan
                 </a>
                 <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-comments w-5 text-center"></i> Pesan Masuk

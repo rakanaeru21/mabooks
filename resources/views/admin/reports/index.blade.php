@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Pesanan - {{ config('app.name', 'MaBooks') }}</title>
+    <title>Laporan - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -54,13 +54,13 @@
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
-                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-file-lines w-5 text-center"></i> Laporan
                 </a>
                 <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
@@ -93,57 +93,117 @@
                 <button id="mobile-sidebar-btn" class="lg:hidden text-gray-600 text-xl">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="text-lg font-bold text-gray-900">Kelola Pesanan</h1>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-900">Laporan</h1>
+                    <p class="text-xs text-gray-500">Periode: {{ $rangeLabel }}</p>
+                </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-sm text-gray-500 hidden sm:block">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
-                    <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                    <a href="{{ route('admin.reports.pdf', $downloadQuery) }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </a>
+                    <div class="hidden sm:flex items-center gap-3">
+                        <span class="text-sm text-gray-500">Halo, <strong class="text-gray-900">{{ Auth::user()->nama }}</strong></span>
+                        <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                        </div>
                     </div>
                 </div>
             </header>
 
             <main class="flex-1 p-6 lg:p-8">
-                @if (session('success'))
-                <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
-                </div>
-                @endif
+                @php
+                    $months = [
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                    ];
+                @endphp
 
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">Daftar Pesanan</h2>
-                        <p class="text-sm text-gray-500 mt-1">Total {{ $orders->total() }} pesanan</p>
-                    </div>
-                </div>
-
-                <!-- Search & Filter -->
-                <form method="GET" action="{{ route('admin.orders.index') }}" class="mb-6">
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <div class="relative flex-1">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID pesanan atau nama/email pengguna..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-file-invoice text-blue-600"></i>
+                            </div>
                         </div>
-                        <select name="status" class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
-                            <option value="">Semua Status</option>
-                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="diproses" {{ request('status') === 'diproses' ? 'selected' : '' }}>Diproses</option>
-                            <option value="dikirim" {{ request('status') === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-                            <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                            <option value="dibatalkan" {{ request('status') === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                        </select>
-                        <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
-                            <i class="fas fa-search"></i> Cari
-                        </button>
-                        @if(request('search') || request('status'))
-                        <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
-                            <i class="fas fa-times"></i> Reset
-                        </a>
-                        @endif
+                        <p class="text-2xl font-extrabold text-gray-900">{{ $totalOrders }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Total Pesanan</p>
                     </div>
-                </form>
 
-                <!-- Orders Table -->
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-book text-purple-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-2xl font-extrabold text-gray-900">{{ $totalItems }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Total Item Terjual</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-wallet text-green-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-2xl font-extrabold text-gray-900">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Total Pendapatan</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-bold text-gray-900">Filter Laporan</h2>
+                        <a href="{{ route('admin.reports.index') }}" class="text-xs text-gray-500 hover:text-orange-500 transition-colors">
+                            <i class="fas fa-rotate-left mr-1"></i> Reset
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <form method="GET" action="{{ route('admin.reports.index') }}" class="space-y-3">
+                            <input type="hidden" name="mode" value="month">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Bulan</label>
+                                    <select name="month" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
+                                        @foreach ($months as $num => $label)
+                                            <option value="{{ $num }}" {{ (int) $filters['month'] === $num ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tahun</label>
+                                    <input type="number" name="year" value="{{ $filters['year'] }}" min="2000" max="{{ date('Y') + 1 }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                                </div>
+                            </div>
+                            <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-calendar"></i> Terapkan Bulan
+                            </button>
+                        </form>
+
+                        <form method="GET" action="{{ route('admin.reports.index') }}" class="space-y-3">
+                            <input type="hidden" name="mode" value="range">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal Mulai</label>
+                                    <input type="date" name="start_date" value="{{ $filters['start_date'] ?? '' }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal Selesai</label>
+                                    <input type="date" name="end_date" value="{{ $filters['end_date'] ?? '' }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                                </div>
+                            </div>
+                            <button type="submit" class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-filter"></i> Terapkan Rentang
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                        <h2 class="font-bold text-gray-900">Daftar Pesanan</h2>
+                        <p class="text-xs text-gray-400">{{ $orders->count() }} pesanan</p>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
@@ -152,10 +212,8 @@
                                     <th class="px-6 py-3">Pemesan</th>
                                     <th class="px-6 py-3">Jumlah Item</th>
                                     <th class="px-6 py-3">Total</th>
-                                    <th class="px-6 py-3">Bukti Bayar</th>
                                     <th class="px-6 py-3">Status</th>
                                     <th class="px-6 py-3">Tanggal</th>
-                                    <th class="px-6 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
@@ -176,17 +234,6 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $order->items->sum('jumlah') }} buku</td>
                                     <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4">
-                                        @if ($order->bukti_pembayaran)
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-                                            <i class="fas fa-check-circle text-[10px]"></i> Sudah
-                                        </span>
-                                        @else
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-500 bg-red-50 px-2.5 py-1 rounded-full">
-                                            <i class="fas fa-times-circle text-[10px]"></i> Belum
-                                        </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4">
                                         @php
                                             $statusColors = [
                                                 'pending' => 'text-yellow-600 bg-yellow-50',
@@ -202,34 +249,18 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('d M Y') }}</td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center justify-center">
-                                            <a href="{{ route('admin.orders.show', $order) }}" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors" title="Detail">
-                                                <i class="fas fa-eye text-xs"></i>
-                                            </a>
-                                            <a href="{{ route('admin.orders.invoice', $order) }}" class="w-8 h-8 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center hover:bg-amber-100 transition-colors ml-2" title="Invoice">
-                                                <i class="fas fa-file-invoice text-xs"></i>
-                                            </a>
-                                        </div>
-                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-10 text-center text-sm text-gray-400">
-                                        <i class="fas fa-shopping-cart text-3xl text-gray-300 mb-3 block"></i>
-                                        Belum ada pesanan.
+                                    <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-400">
+                                        <i class="fas fa-file-lines text-3xl text-gray-300 mb-3 block"></i>
+                                        Belum ada data laporan.
                                     </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
-                    @if ($orders->hasPages())
-                    <div class="px-6 py-4 border-t border-gray-100">
-                        {{ $orders->links() }}
-                    </div>
-                    @endif
                 </div>
             </main>
         </div>
@@ -258,13 +289,13 @@
                 <a href="{{ route('admin.books.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-book w-5 text-center"></i> Buku
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
                     <i class="fas fa-tags w-5 text-center"></i> Kategori
                 </a>
-                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">
+                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500/10 text-orange-500 font-semibold text-sm">
                     <i class="fas fa-file-lines w-5 text-center"></i> Laporan
                 </a>
                 <a href="{{ route('admin.messages.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm">

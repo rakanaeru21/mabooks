@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\CustomerServiceController;
@@ -92,6 +93,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('admin.orders.invoice');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+    Route::get('/reports/pdf', [ReportController::class, 'download'])->name('admin.reports.pdf');
     Route::get('/messages', [MessageController::class, 'index'])->name('admin.messages.index');
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('admin.messages.show');
 });
