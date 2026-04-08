@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Tambah Buku - {{ config('app.name', 'MaBooks') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -206,7 +207,12 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Kategori</label>
+                                    <div class="flex items-center justify-between gap-3 mb-1.5">
+                                        <label for="category_id" class="block text-sm font-semibold text-gray-700">Kategori</label>
+                                        <button type="button" id="open-category-modal" class="text-xs font-semibold text-orange-600 hover:text-orange-700">
+                                            + Tambah kategori
+                                        </button>
+                                    </div>
                                     <select name="category_id" id="category_id"
                                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors bg-white">
                                         <option value="">-- Pilih Kategori --</option>
@@ -344,6 +350,39 @@
         </aside>
     </div>
 
+    <!-- Category Modal -->
+    <div id="category-modal" class="hidden fixed inset-0 z-50">
+        <div class="absolute inset-0 bg-black/50" id="category-modal-backdrop"></div>
+        <div class="relative mx-auto mt-24 w-full max-w-md px-4">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-gray-900">Tambah Kategori</h3>
+                    <button type="button" id="close-category-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label for="new-category-name" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kategori</label>
+                        <input type="text" id="new-category-name"
+                            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+                            placeholder="Masukkan nama kategori">
+                        <p id="category-error" class="hidden text-red-500 text-xs mt-1">Nama kategori wajib diisi.</p>
+                        <p id="category-server-error" class="hidden text-red-500 text-xs mt-1"></p>
+                    </div>
+                    <div class="flex items-center justify-end gap-3">
+                        <button type="button" id="cancel-category" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100">
+                            Batal
+                        </button>
+                        <button type="button" id="save-category" class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-orange-500 text-white hover:bg-orange-600">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const sidebarBtn = document.getElementById('mobile-sidebar-btn');
         const sidebarOverlay = document.getElementById('mobile-sidebar-overlay');
@@ -354,6 +393,89 @@
         sidebarBtn.addEventListener('click', toggleSidebar);
         sidebarBackdrop.addEventListener('click', toggleSidebar);
         closeSidebar.addEventListener('click', toggleSidebar);
+
+        const categoryModal = document.getElementById('category-modal');
+        const categoryBackdrop = document.getElementById('category-modal-backdrop');
+        const openCategoryModal = document.getElementById('open-category-modal');
+        const closeCategoryModal = document.getElementById('close-category-modal');
+        const cancelCategory = document.getElementById('cancel-category');
+        const saveCategory = document.getElementById('save-category');
+        const categoryNameInput = document.getElementById('new-category-name');
+        const categoryError = document.getElementById('category-error');
+        const categoryServerError = document.getElementById('category-server-error');
+        const categorySelect = document.getElementById('category_id');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        function showCategoryModal() {
+            categoryModal.classList.remove('hidden');
+            categoryNameInput.value = '';
+            categoryError.classList.add('hidden');
+            categoryServerError.classList.add('hidden');
+            categoryNameInput.focus();
+        }
+
+        function hideCategoryModal() {
+            categoryModal.classList.add('hidden');
+        }
+
+        function addCategoryOption(id, name) {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = name;
+            option.selected = true;
+            categorySelect.appendChild(option);
+        }
+
+        openCategoryModal.addEventListener('click', showCategoryModal);
+        closeCategoryModal.addEventListener('click', hideCategoryModal);
+        cancelCategory.addEventListener('click', hideCategoryModal);
+        categoryBackdrop.addEventListener('click', hideCategoryModal);
+
+        saveCategory.addEventListener('click', async () => {
+            const name = categoryNameInput.value.trim();
+            if (!name) {
+                categoryError.classList.remove('hidden');
+                categoryNameInput.focus();
+                return;
+            }
+            categoryError.classList.add('hidden');
+            categoryServerError.classList.add('hidden');
+            saveCategory.disabled = true;
+            saveCategory.textContent = 'Menyimpan...';
+
+            try {
+                const response = await fetch("{{ route('admin.categories.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ nama: name }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const message = errorData?.message || 'Gagal menyimpan kategori.';
+                    categoryServerError.textContent = message;
+                    categoryServerError.classList.remove('hidden');
+                    if (errorData?.errors?.nama?.length) {
+                        categoryServerError.textContent = errorData.errors.nama[0];
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                addCategoryOption(data.category.id, data.category.nama);
+                hideCategoryModal();
+            } catch (error) {
+                categoryServerError.textContent = 'Terjadi kesalahan jaringan. Coba lagi.';
+                categoryServerError.classList.remove('hidden');
+            } finally {
+                saveCategory.disabled = false;
+                saveCategory.textContent = 'Simpan';
+            }
+        });
     </script>
 
 </body>

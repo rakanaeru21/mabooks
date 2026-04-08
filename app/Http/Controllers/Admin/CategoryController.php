@@ -26,7 +26,17 @@ class CategoryController extends Controller
             'deskripsi' => 'nullable|string|max:500',
         ]);
 
-        Category::create($validated);
+        $category = Category::create($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Kategori berhasil ditambahkan!',
+                'category' => [
+                    'id' => $category->id,
+                    'nama' => $category->nama,
+                ],
+            ]);
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
