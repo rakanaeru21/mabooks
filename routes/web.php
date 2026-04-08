@@ -73,6 +73,7 @@ Route::middleware('user')->group(function () {
     Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('user.customer-service');
     Route::post('/customer-service', [CustomerServiceController::class, 'store'])->name('user.customer-service.store');
     Route::get('/pesanan', [OrderHistoryController::class, 'index'])->name('user.orders');
+    Route::get('/invoice/{order}', [OrderHistoryController::class, 'invoice'])->name('user.invoice');
 });
 
 // Admin auth routes (halaman login admin terpisah)
@@ -89,6 +90,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('admin.orders.invoice');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
     Route::get('/messages', [MessageController::class, 'index'])->name('admin.messages.index');
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('admin.messages.show');

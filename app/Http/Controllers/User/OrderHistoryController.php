@@ -23,4 +23,22 @@ class OrderHistoryController extends Controller
 
         return view('user.orders', compact('user', 'orders'));
     }
+
+    public function invoice(Order $order)
+    {
+        $user = Auth::user();
+
+        if ($order->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $order->load('user', 'items.book');
+
+        return view('invoice', [
+            'order' => $order,
+            'user' => $user,
+            'backUrl' => route('user.orders'),
+            'backLabel' => 'Kembali ke Pesanan',
+        ]);
+    }
 }

@@ -38,6 +38,18 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
+    public function invoice(Order $order)
+    {
+        $order->load('user', 'items.book');
+
+        return view('invoice', [
+            'order' => $order,
+            'user' => $order->user,
+            'backUrl' => route('admin.orders.show', $order),
+            'backLabel' => 'Kembali ke Detail Pesanan',
+        ]);
+    }
+
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([

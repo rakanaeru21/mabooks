@@ -139,6 +139,13 @@
             <a href="{{ route('user.dashboard') }}" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition-colors">
                 Kembali ke Toko
             </a>
+            @if ($order->status === 'selesai')
+            <a href="{{ route('user.invoice', $order) }}" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition-colors ml-2">
+                Lihat Invoice
+            </a>
+            @else
+            <p class="text-xs text-gray-400 mt-3">Invoice tersedia setelah pesanan selesai.</p>
+            @endif
         </div>
     </main>
 

@@ -198,15 +198,23 @@
                             <p class="text-xs text-gray-400">Total</p>
                             <p class="text-base font-bold text-gray-900">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</p>
                         </div>
-                        @if($order->status === 'pending' && !$order->bukti_pembayaran)
-                        <a href="{{ route('user.payment', $order) }}" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs px-4 py-2 rounded-lg transition-colors">
-                            Bayar
-                        </a>
-                        @elseif($order->bukti_pembayaran)
-                        <a href="{{ route('user.payment.success', $order) }}" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium text-xs px-4 py-2 rounded-lg transition-colors">
-                            Detail
-                        </a>
-                        @endif
+                        <div class="flex items-center gap-2">
+                            @if($order->status === 'pending' && !$order->bukti_pembayaran)
+                            <a href="{{ route('user.payment', $order) }}" class="bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs px-4 py-2 rounded-lg transition-colors">
+                                Bayar
+                            </a>
+                            @elseif($order->bukti_pembayaran)
+                            <a href="{{ route('user.payment.success', $order) }}" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium text-xs px-4 py-2 rounded-lg transition-colors">
+                                Detail
+                            </a>
+                            @endif
+
+                            @if($order->status === 'selesai')
+                            <a href="{{ route('user.invoice', $order) }}" class="bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs px-4 py-2 rounded-lg transition-colors">
+                                Invoice
+                            </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

@@ -204,6 +204,9 @@
                                             <a href="{{ route('admin.orders.show', $order) }}" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors" title="Detail">
                                                 <i class="fas fa-eye text-xs"></i>
                                             </a>
+                                            <a href="{{ route('admin.orders.invoice', $order) }}" class="w-8 h-8 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center hover:bg-amber-100 transition-colors ml-2" title="Invoice">
+                                                <i class="fas fa-file-invoice text-xs"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
