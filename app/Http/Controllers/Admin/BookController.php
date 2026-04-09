@@ -61,13 +61,14 @@ class BookController extends Controller
             'tahun_terbit'   => 'nullable|integer|min:1901|max:' . (date('Y') + 1),
             'isbn'           => 'nullable|string|max:20|unique:books,isbn,' . $book->id,
             'harga'          => 'required|numeric|min:0',
+            'stok'           => 'required|integer|min:0',
             'stok_tambahan'  => 'nullable|integer|min:0',
             'deskripsi'      => 'nullable|string',
             'cover'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'category_id'    => 'nullable|exists:categories,id',
         ]);
 
-        $validated['stok'] = $book->stok + ($validated['stok_tambahan'] ?? 0);
+        $validated['stok'] = $validated['stok'] + ($validated['stok_tambahan'] ?? 0);
         unset($validated['stok_tambahan']);
 
         if ($request->hasFile('cover')) {

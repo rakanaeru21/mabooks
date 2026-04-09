@@ -92,9 +92,16 @@
                     <p class="text-xs text-gray-400 mb-5">Scan kode QR di bawah untuk melakukan pembayaran</p>
                     <div class="flex justify-center">
                         <div class="bg-white border border-gray-200 rounded-xl p-3 inline-block">
-                            <img src="{{ asset('images/eren mika.jpg') }}" alt="QRIS" class="w-64 h-64 sm:w-72 sm:h-72 object-contain rounded-lg">
+                            <img src="{{ asset('images/qris.png') }}" alt="QRIS" class="w-64 h-64 sm:w-72 sm:h-72 object-contain rounded-lg">
                         </div>
                     </div>
+
+                    <div class="flex justify-center mt-4">
+                        <a href="{{ asset('images/qris.png') }}" download="qris-mabooks.png" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors">
+                            <i class="fas fa-download"></i> Download QRIS
+                        </a>
+                    </div>
+
                     <div class="mt-5 bg-gray-50 rounded-lg p-4">
                         <div class="text-sm text-gray-600">
                             <p class="font-medium text-gray-700 mb-2">Petunjuk Pembayaran:</p>

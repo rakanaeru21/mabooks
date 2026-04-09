@@ -119,9 +119,7 @@
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <nav class="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                        <a href="/" class="hover:text-orange-500 transition-colors">Beranda</a>
-                        <span>/</span>
-                        <span class="text-gray-600 font-medium">Katalog</span>
+                        <a href="/" class="text-gray-600 font-medium">Beranda</a>
                     </nav>
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Selamat datang, {{ $user->nama }}</h1>
                     <p class="text-gray-500 mt-1 text-sm">Temukan koleksi buku terbaik untuk bacaan favoritmu.</p>

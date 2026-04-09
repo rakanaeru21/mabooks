@@ -34,7 +34,7 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased">
 
-    <!-- ==================== NAVBAR ==================== -->
+    <!-- ==================== NAVBAR COY ==================== -->
     <nav class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2">
@@ -65,10 +65,10 @@
         </div>
     </nav>
 
-    <!-- ==================== MAIN ==================== -->
+    <!-- ==================== KONTEN UTAMA NIH BOS ==================== -->
     <main class="max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
 
-        <!-- Success Card — Landscape -->
+        <!-- Kartu Sukses — Mantap Jiwa 🔥 -->
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-6">
             <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center shrink-0 animate-check">
                 <i class="fas fa-check-circle text-3xl text-green-500"></i>
@@ -112,7 +112,7 @@
         </div>
         @endif
 
-        <!-- Status Banner -->
+        <!-- Banner Status — Lagi Nunggu Nih -->
         <div class="bg-green-50 rounded-2xl border border-green-100 px-6 py-4 mb-8 flex items-center gap-3">
             <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
                 <i class="fas fa-clock text-green-600 text-sm"></i>
@@ -123,9 +123,9 @@
             </div>
         </div>
 
-        <!-- Top Row: 3 info cards side by side -->
+        <!-- Baris Atas: 3 kartu info sejajar, rapih bener dah -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <!-- Alamat Pengiriman -->
+            <!-- Alamat Kirim — Mau Dikirim Kemana Nih -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -136,7 +136,7 @@
                 <p class="text-sm text-gray-600 leading-relaxed">{{ $order->alamat }}</p>
             </div>
 
-            <!-- Detail Pesanan -->
+            <!-- Detail Orderan — Info Lengkapnya Nih -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -160,7 +160,7 @@
                 </div>
             </div>
 
-            <!-- Total Pembayaran -->
+            <!-- Total Bayar — Segini Dong Bossque -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
@@ -173,10 +173,10 @@
             </div>
         </div>
 
-        <!-- Bottom Row: Items + Bukti side by side -->
+        <!-- Baris Bawah: Barang + Bukti Bayar Sebelahan -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
-            <!-- Item Pesanan -->
+            <!-- Barang Yang Dipesan — Cekidot -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
                     <div class="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
@@ -217,7 +217,7 @@
                 </div>
             </div>
 
-            <!-- Bukti Pembayaran -->
+            <!-- Bukti Bayar — Udah Transfer Belom? -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
                     <div class="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -243,7 +243,7 @@
             </div>
         </div>
 
-        <!-- Actions -->
+        <!-- Tombol Aksi — Mau Ngapain Lagi Nih -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             @if ($order->status === 'dikirim')
             <form method="POST" action="{{ route('user.orders.confirmReceived', $order) }}" onsubmit="return confirm('Apakah kamu yakin produk sudah diterima?')">
@@ -271,7 +271,7 @@
         @endif
     </main>
 
-    <!-- ==================== FOOTER ==================== -->
+    <!-- ==================== FOOTER — KAKI HALAMAN GAES ==================== -->
     <footer class="bg-gray-900 mt-10">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
