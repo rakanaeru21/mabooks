@@ -166,6 +166,94 @@
                         </div>
 
                         <!-- Bukti Pembayaran -->
+                        @if ($order->metode_pembayaran === 'bayar_di_toko')
+                        <!-- Pembayaran di Toko -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-5">
+                                <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-store text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-bold text-gray-900">Pembayaran di Toko</h2>
+                                    <p class="text-xs text-gray-400">Customer membayar langsung di kasir</p>
+                                </div>
+                            </div>
+
+                            <!-- Kode Pesanan -->
+                            <div class="text-center mb-5 bg-gray-50 rounded-xl p-5">
+                                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Kode Pesanan</p>
+                                <div class="inline-block bg-gray-900 text-white text-2xl font-mono font-extrabold tracking-[0.2em] px-6 py-3 rounded-xl">
+                                    {{ $order->kode_pesanan }}
+                                </div>
+                            </div>
+
+                            @if ($order->uang_diterima)
+                            <!-- Sudah dibayar -->
+                            <div class="bg-green-50 border border-green-200 rounded-xl p-4 space-y-2">
+                                <div class="flex items-center gap-2 text-green-700 font-semibold text-sm mb-2">
+                                    <i class="fas fa-check-circle"></i> Pembayaran Diterima
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Total Belanja</span>
+                                    <span class="font-bold text-gray-900">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Uang Diterima</span>
+                                    <span class="font-bold text-gray-900">Rp {{ number_format($order->uang_diterima, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm border-t border-green-200 pt-2">
+                                    <span class="text-gray-600">Kembalian</span>
+                                    <span class="font-bold text-orange-500">Rp {{ number_format($order->kembalian, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                            @else
+                            <!-- Form Kasir -->
+                            <form method="POST" action="{{ route('admin.orders.processPayment', $order) }}" id="kasir-form">
+                                @csrf
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Total yang Harus Dibayar</label>
+                                    <div class="px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-lg font-extrabold text-orange-500">
+                                        Rp {{ number_format($order->total_harga, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="uang_diterima" class="block text-sm font-semibold text-gray-700 mb-2">Uang yang Diberikan Customer</label>
+                                    <input type="number" name="uang_diterima" id="uang_diterima" min="{{ $order->total_harga }}" step="1" required
+                                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                                        placeholder="Masukkan nominal uang..."
+                                        oninput="hitungKembalian()">
+                                    @error('uang_diterima')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kembalian</label>
+                                    <div id="kembalian-display" class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-lg font-extrabold text-gray-400">
+                                        Rp 0
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">
+                                    <i class="fas fa-cash-register mr-1"></i> Proses Pembayaran
+                                </button>
+                            </form>
+                            <script>
+                                function hitungKembalian() {
+                                    const total = {{ $order->total_harga }};
+                                    const uang = parseFloat(document.getElementById('uang_diterima').value) || 0;
+                                    const kembalian = uang - total;
+                                    const display = document.getElementById('kembalian-display');
+                                    if (kembalian >= 0) {
+                                        display.textContent = 'Rp ' + kembalian.toLocaleString('id-ID');
+                                        display.className = 'px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-lg font-extrabold text-green-600';
+                                    } else {
+                                        display.textContent = 'Uang kurang: Rp ' + Math.abs(kembalian).toLocaleString('id-ID');
+                                        display.className = 'px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-lg font-extrabold text-red-500';
+                                    }
+                                }
+                            </script>
+                            @endif
+                        </div>
+                        @else
                         <div class="bg-white rounded-2xl border border-gray-100 p-6">
                             <div class="flex items-center gap-3 mb-5">
                                 <div class="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -192,6 +280,7 @@
                             </div>
                             @endif
                         </div>
+                        @endif
                     </div>
 
                     <!-- Right Column -->
@@ -229,6 +318,35 @@
                                 <h2 class="font-bold text-gray-900">Alamat Pengiriman</h2>
                             </div>
                             <p class="text-sm text-gray-600 leading-relaxed">{{ $order->alamat }}</p>
+                        </div>
+
+                        <!-- Metode Pembayaran -->
+                        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-credit-card text-indigo-500 text-sm"></i>
+                                </div>
+                                <h2 class="font-bold text-gray-900">Metode Pembayaran</h2>
+                            </div>
+                            @if ($order->metode_pembayaran === 'bayar_di_toko')
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg">
+                                    <i class="fas fa-store text-xs"></i> Bayar di Toko
+                                </span>
+                            </div>
+                            @if ($order->kode_pesanan)
+                            <div class="mt-3 bg-gray-50 rounded-xl p-3 text-center">
+                                <p class="text-xs text-gray-400 mb-1">Kode Pesanan</p>
+                                <span class="text-lg font-mono font-extrabold text-gray-900 tracking-wider">{{ $order->kode_pesanan }}</span>
+                            </div>
+                            @endif
+                            @else
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 bg-purple-50 px-3 py-1.5 rounded-lg">
+                                    <i class="fas fa-qrcode text-xs"></i> QRIS
+                                </span>
+                            </div>
+                            @endif
                         </div>
 
                         <!-- Status & Update -->

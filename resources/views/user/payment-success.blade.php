@@ -74,8 +74,13 @@
                 <i class="fas fa-check-circle text-3xl text-green-500"></i>
             </div>
             <div class="flex-1 text-center md:text-left">
+                @if ($order->metode_pembayaran === 'bayar_di_toko')
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">Pesanan Berhasil Dibuat!</h1>
+                <p class="text-gray-500 text-sm">Tunjukkan kode pesanan di bawah ke kasir di toko untuk melakukan pembayaran.</p>
+                @else
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">Pembayaran Terkirim!</h1>
                 <p class="text-gray-500 text-sm">Bukti pembayaran kamu telah berhasil dikirim. Pesanan akan segera diproses oleh admin.</p>
+                @endif
             </div>
             <div class="flex flex-col items-center gap-2 shrink-0">
                 <div class="inline-flex items-center gap-2 bg-orange-50 text-orange-600 font-bold text-sm px-5 py-2.5 rounded-xl border border-orange-100">
@@ -100,6 +105,24 @@
             </div>
         </div>
 
+        @if ($order->metode_pembayaran === 'bayar_di_toko' && $order->kode_pesanan)
+        <!-- Kode Pesanan untuk Bayar di Toko -->
+        <div class="bg-white rounded-2xl border-2 border-dashed border-orange-300 shadow-sm p-8 mb-8 text-center">
+            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-store text-2xl text-orange-500"></i>
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-2">Kode Pesanan Kamu</p>
+            <div class="inline-block bg-gray-900 text-white text-3xl md:text-4xl font-mono font-extrabold tracking-[0.3em] px-8 py-4 rounded-2xl mb-4">
+                {{ $order->kode_pesanan }}
+            </div>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">Tunjukkan kode ini ke kasir di toko <strong class="text-gray-900">MaBooks</strong> untuk melakukan pembayaran dan mengambil pesanan kamu.</p>
+            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-orange-600 bg-orange-50 rounded-lg py-2 px-4 inline-flex">
+                <i class="fas fa-info-circle"></i>
+                <span>Total yang harus dibayar: <strong>Rp {{ number_format($order->total_harga, 0, ',', '.') }}</strong></span>
+            </div>
+        </div>
+        @endif
+
         @if (session('success'))
         <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-3 rounded-2xl text-sm flex items-center gap-2">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
@@ -113,6 +136,17 @@
         @endif
 
         <!-- Banner Status — Lagi Nunggu Nih -->
+        @if ($order->metode_pembayaran === 'bayar_di_toko' && $order->status === 'pending')
+        <div class="bg-amber-50 rounded-2xl border border-amber-100 px-6 py-4 mb-8 flex items-center gap-3">
+            <div class="w-9 h-9 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                <i class="fas fa-store text-amber-600 text-sm"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-amber-700">Menunggu Pembayaran di Toko</p>
+                <p class="text-xs text-amber-600 mt-0.5">Silakan datang ke toko MaBooks dan tunjukkan kode pesanan ke kasir untuk melakukan pembayaran.</p>
+            </div>
+        </div>
+        @else
         <div class="bg-green-50 rounded-2xl border border-green-100 px-6 py-4 mb-8 flex items-center gap-3">
             <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
                 <i class="fas fa-clock text-green-600 text-sm"></i>
@@ -122,6 +156,7 @@
                 <p class="text-xs text-green-600 mt-0.5">Pesanan kamu sedang diproses. Kamu akan mendapat notifikasi saat pesanan dikirim.</p>
             </div>
         </div>
+        @endif
 
         <!-- Baris Atas: 3 kartu info sejajar, rapih bener dah -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -151,7 +186,7 @@
                     </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-500">Metode</span>
-                        <span class="font-semibold text-gray-900">Transfer Bank</span>
+                        <span class="font-semibold text-gray-900">{{ $order->metode_pembayaran === 'bayar_di_toko' ? 'Bayar di Toko' : 'QRIS' }}</span>
                     </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-500">Total Item</span>

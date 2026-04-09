@@ -15,6 +15,10 @@ class Order extends Model
         'total_harga',
         'status',
         'bukti_pembayaran',
+        'metode_pembayaran',
+        'kode_pesanan',
+        'uang_diterima',
+        'kembalian',
     ];
 
     public function user()

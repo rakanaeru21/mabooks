@@ -121,7 +121,7 @@
                     <div class="flex flex-col sm:flex-row gap-3">
                         <div class="relative flex-1">
                             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID pesanan atau nama/email pengguna..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID, kode pesanan, atau nama/email pengguna..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                         </div>
                         <select name="status" class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
                             <option value="">Semua Status</option>
@@ -131,10 +131,15 @@
                             <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
                             <option value="dibatalkan" {{ request('status') === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                         </select>
+                        <select name="metode" class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
+                            <option value="">Semua Metode</option>
+                            <option value="qris" {{ request('metode') === 'qris' ? 'selected' : '' }}>QRIS</option>
+                            <option value="bayar_di_toko" {{ request('metode') === 'bayar_di_toko' ? 'selected' : '' }}>Bayar di Toko</option>
+                        </select>
                         <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
                             <i class="fas fa-search"></i> Cari
                         </button>
-                        @if(request('search') || request('status'))
+                        @if(request('search') || request('status') || request('metode'))
                         <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
                             <i class="fas fa-times"></i> Reset
                         </a>
@@ -152,7 +157,8 @@
                                     <th class="px-6 py-3">Pemesan</th>
                                     <th class="px-6 py-3">Jumlah Item</th>
                                     <th class="px-6 py-3">Total</th>
-                                    <th class="px-6 py-3">Bukti Bayar</th>
+                                    <th class="px-6 py-3">Metode</th>
+                                    {{-- <th class="px-6 py-3"></th>Bukti Bayar</th> --}}
                                     <th class="px-6 py-3">Status</th>
                                     <th class="px-6 py-3">Tanggal</th>
                                     <th class="px-6 py-3 text-center">Aksi</th>
@@ -176,6 +182,17 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $order->items->sum('jumlah') }} buku</td>
                                     <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4">
+                                        @if ($order->metode_pembayaran === 'bayar_di_toko')
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
+                                            <i class="fas fa-store text-[10px]"></i> Di Toko
+                                        </span>
+                                        @else
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">
+                                            <i class="fas fa-qrcode text-[10px]"></i> QRIS
+                                        </span>
+                                        @endif
+                                    </td>
+                                    {{-- <td class="px-6 py-4"></td>
                                         @if ($order->bukti_pembayaran)
                                         <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
                                             <i class="fas fa-check-circle text-[10px]"></i> Sudah
@@ -185,7 +202,7 @@
                                             <i class="fas fa-times-circle text-[10px]"></i> Belum
                                         </span>
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td class="px-6 py-4">
                                         @php
                                             $statusColors = [
@@ -215,7 +232,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-10 text-center text-sm text-gray-400">
+                                    <td colspan="9" class="px-6 py-10 text-center text-sm text-gray-400">
                                         <i class="fas fa-shopping-cart text-3xl text-gray-300 mb-3 block"></i>
                                         Belum ada pesanan.
                                     </td>

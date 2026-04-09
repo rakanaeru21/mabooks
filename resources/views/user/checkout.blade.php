@@ -120,6 +120,33 @@
                         </div>
                     </div>
 
+                    <!-- Payment Method -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="font-bold text-gray-900 mb-4">Metode Pembayaran</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-orange-400 bg-orange-50" id="label-qris">
+                                <input type="radio" name="metode_pembayaran" value="qris" checked class="w-4 h-4 text-orange-500 focus:ring-orange-500" onchange="switchMetode()">
+                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <i class="fas fa-qrcode text-orange-500"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-gray-900">QRIS</p>
+                                    <p class="text-xs text-gray-500">Bayar via scan QR code, upload bukti transfer</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-gray-200 hover:border-gray-300" id="label-bayar_di_toko">
+                                <input type="radio" name="metode_pembayaran" value="bayar_di_toko" class="w-4 h-4 text-orange-500 focus:ring-orange-500" onchange="switchMetode()">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+                                    <i class="fas fa-store text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-gray-900">Bayar di Toko</p>
+                                    <p class="text-xs text-gray-500">Ambil pesanan & bayar langsung di toko dengan kode pesanan</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Order Summary -->
                     <div class="bg-white rounded-xl border border-gray-200 p-6">
                         <h2 class="font-bold text-gray-900 mb-4">Ringkasan Pesanan</h2>
@@ -251,6 +278,26 @@
             });
         }
 
+        function switchMetode() {
+            const selected = document.querySelector('input[name="metode_pembayaran"]:checked').value;
+            const labelQris = document.getElementById('label-qris');
+            const labelToko = document.getElementById('label-bayar_di_toko');
+            const alamatSection = document.getElementById('alamat').closest('.bg-white');
+            const alamatLabel = alamatSection.querySelector('h2');
+
+            if (selected === 'qris') {
+                labelQris.className = 'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-orange-400 bg-orange-50';
+                labelToko.className = 'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-gray-200 hover:border-gray-300';
+                alamatLabel.textContent = 'Alamat Pengiriman';
+                document.getElementById('alamat').placeholder = 'Masukkan alamat lengkap pengiriman...';
+            } else {
+                labelToko.className = 'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-orange-400 bg-orange-50';
+                labelQris.className = 'flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all border-gray-200 hover:border-gray-300';
+                alamatLabel.textContent = 'Alamat / Catatan';
+                document.getElementById('alamat').placeholder = 'Masukkan alamat atau catatan tambahan...';
+            }
+        }
+
         function placeOrder() {
             const alamat = document.getElementById('alamat').value.trim();
             const errorEl = document.getElementById('alamat-error');
@@ -273,6 +320,8 @@ btn.innerHTML = 'Memproses...';
                 jumlah: item.qty,
             }));
 
+            const metode = document.querySelector('input[name="metode_pembayaran"]:checked').value;
+
             fetch('{{ route("user.checkout.store") }}', {
                 method: 'POST',
                 headers: {
@@ -280,7 +329,7 @@ btn.innerHTML = 'Memproses...';
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ alamat, items }),
+                body: JSON.stringify({ alamat, items, metode_pembayaran: metode }),
             })
             .then(res => {
                 if (!res.ok) return res.json().then(d => { throw d; });
@@ -290,8 +339,13 @@ btn.innerHTML = 'Memproses...';
                 // Clear cart
                 localStorage.removeItem('mabooks_cart');
 
-                // Redirect to payment page
-                window.location.href = '/payment/' + data.order_id;
+                if (metode === 'bayar_di_toko') {
+                    // Redirect to payment success page (shows order code)
+                    window.location.href = '/payment/' + data.order_id + '/success';
+                } else {
+                    // Redirect to QRIS payment page
+                    window.location.href = '/payment/' + data.order_id;
+                }
             })
             .catch(err => {
                 let msg = 'Terjadi kesalahan. Silakan coba lagi.';

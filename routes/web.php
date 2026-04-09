@@ -94,6 +94,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('admin.orders.invoice');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::post('/orders/{order}/process-payment', [OrderController::class, 'processPayment'])->name('admin.orders.processPayment');
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
     Route::get('/reports/pdf', [ReportController::class, 'download'])->name('admin.reports.pdf');
     Route::get('/messages', [MessageController::class, 'index'])->name('admin.messages.index');

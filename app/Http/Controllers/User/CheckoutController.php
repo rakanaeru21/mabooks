@@ -8,6 +8,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -24,11 +25,13 @@ class CheckoutController extends Controller
             'items' => 'required|array|min:1',
             'items.*.book_id' => 'required|exists:books,id',
             'items.*.jumlah' => 'required|integer|min:1',
+            'metode_pembayaran' => 'required|in:qris,bayar_di_toko',
         ]);
 
         $user = Auth::user();
+        $metodePembayaran = $validated['metode_pembayaran'];
 
-        $order = DB::transaction(function () use ($validated, $user) {
+        $order = DB::transaction(function () use ($validated, $user, $metodePembayaran) {
             $totalHarga = 0;
             $orderItems = [];
 
@@ -51,11 +54,20 @@ class CheckoutController extends Controller
                 $book->decrement('stok', $item['jumlah']);
             }
 
+            $kodePesanan = null;
+            if ($metodePembayaran === 'bayar_di_toko') {
+                do {
+                    $kodePesanan = strtoupper(Str::random(8));
+                } while (Order::where('kode_pesanan', $kodePesanan)->exists());
+            }
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'alamat' => $validated['alamat'],
                 'total_harga' => $totalHarga,
                 'status' => 'pending',
+                'metode_pembayaran' => $metodePembayaran,
+                'kode_pesanan' => $kodePesanan,
             ]);
 
             $order->items()->createMany($orderItems);
@@ -76,6 +88,11 @@ class CheckoutController extends Controller
 
         if ($order->user_id !== $user->id) {
             abort(403);
+        }
+
+        // Bayar di toko: langsung ke halaman success (kode pesanan)
+        if ($order->metode_pembayaran === 'bayar_di_toko') {
+            return redirect()->route('user.payment.success', $order);
         }
 
         if ($order->bukti_pembayaran) {
